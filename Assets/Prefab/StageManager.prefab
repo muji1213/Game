@@ -1,0 +1,74 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &5824108089621860380
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 5824108089621860370}
+  - component: {fileID: 5824108089621860369}
+  m_Layer: 0
+  m_Name: StageManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &5824108089621860370
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5824108089621860380}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -3.0707538, y: -4.5567303, z: 147.88353}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &5824108089621860369
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5824108089621860380}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 97e4ea38632336047a1a053d10bd2a1d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  MaxHPTime: 6
+  canvas: {fileID: 0}
+  finishCanvas: {fileID: 0}
+  player: {fileID: 0}
+  finishCam: {fileID: 0}
+  resultUI: {fileID: 0}
+  poseUI: {fileID: 0}
+  retryUI: {fileID: 0}
+  scoreUI: {fileID: 0}
+  lifeUI: {fileID: 0}
+  gaugeUI: {fileID: 0}
+  evaluateUI: {fileID: 0}
+  result: {fileID: 0}
+  countDown: {fileID: 0}
+  fadeIn: {fileID: 0}
+  target: {fileID: 0}
+  bgm: {fileID: 8300000, guid: f519c1765fb9d024fa493a58fb67ae44, type: 3}
+  colSE: {fileID: 8300000, guid: cbc52c6113064de41bdfb8cc880030ef, type: 3}
+  blowSE: {fileID: 8300000, guid: a2a53007a12273a49b08670517b8edd5, type: 3}
+  successSE: {fileID: 8300000, guid: a0b13f93a8e137648882cb670459f804, type: 3}
+  missedSE: {fileID: 8300000, guid: 41ec629b65b7b8149a07ac0f4d586495, type: 3}
+  temporarilypoint: 0
+  isNodamage: 0
+  isMaxHP: 0
+  goalPos: 0
+  deadPos: 0
+  frisbeeHP: 1
+  isCleared: 0
