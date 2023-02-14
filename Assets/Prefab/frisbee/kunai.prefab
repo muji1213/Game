@@ -179,7 +179,7 @@ MonoBehaviour:
   invincibleTime: 0.5
   invincibleCycle: 0.5
   isBlowed: 1
-  dodgeTime: 30
+  dodgeTime: 2
   dodgeCoolTime: 3
   smoke: {fileID: 1059202402665008055}
 --- !u!54 &-6305324337115397770
