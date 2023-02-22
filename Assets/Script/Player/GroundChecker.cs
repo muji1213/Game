@@ -19,6 +19,7 @@ public class GroundChecker : MonoBehaviour
         {
             isGround = true;
         }
+        //Exitがtrueなら接地していないことになる
         else if (isGroundExit)
         {
             isGround = false;
@@ -30,6 +31,7 @@ public class GroundChecker : MonoBehaviour
         return isGround;
     }
 
+    //地面についたらEnterフラグをTrue
     private void OnTriggerEnter(Collider other)
     {
         if (other.CompareTag(groundTag))
@@ -38,6 +40,7 @@ public class GroundChecker : MonoBehaviour
         }
     }
 
+    //地面にいる間StayフラグをTrue
     private void OnTriggerStay(Collider other)
     {
         if (other.CompareTag(groundTag))
@@ -46,6 +49,7 @@ public class GroundChecker : MonoBehaviour
         }
     }
 
+    //地面を離れたらExitをTrue
     private void OnTriggerExit(Collider other)
     {
         if (other.CompareTag(groundTag))

@@ -27,7 +27,6 @@ public class InstructionManager : SceneChanger
     //ƒpƒlƒ‹‚ÌŸ‚ÌÀ•W
     private float nextPanelPosX;
 
-
     void Start()
     {
         //BGM
@@ -129,5 +128,4 @@ public class InstructionManager : SceneChanger
             nextPanelPosX = currentPanelPosX + (panelWidth + celWidth);
         }
     }
-
 }

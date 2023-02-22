@@ -111,6 +111,7 @@ public class Player_HurtBox : MonoBehaviour
             }
         }
 
+        //ライフアップを取ったらHPを一つ追加する
         if (other.CompareTag("Heart"))
         {
             player.LifeUP();

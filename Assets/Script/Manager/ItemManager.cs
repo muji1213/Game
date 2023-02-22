@@ -12,7 +12,6 @@ public class ItemManager : MonoBehaviour
     //フリスビーのプレハブ（個別にステータスがふってある）
     [SerializeField] private GameObject[] Frisbees = new GameObject[3];
 
-
     //初期化したかどうか
     static private bool isInitialized = false;
 

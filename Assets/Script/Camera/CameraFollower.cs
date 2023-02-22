@@ -62,6 +62,8 @@ public class CameraFollower : MonoBehaviour
             //対象の位置への移動
             //posTo：追従の対象
             Vector3 posTo = target.transform.position + transform.up * _distanceUpwards + transform.forward * _distanceForwards;
+
+            //現在位置からposToへ近づく
             transform.position = Vector3.Slerp(transform.position, posTo, posSpeed);
 
             //カメラの回転

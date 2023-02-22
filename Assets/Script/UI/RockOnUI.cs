@@ -49,6 +49,7 @@ public class RockOnUI : MonoBehaviour
             out var uiLocalPos
         );
 
+        //ç¿ïWÇîΩâf
         rectTransform.localPosition = uiLocalPos;
     }
 

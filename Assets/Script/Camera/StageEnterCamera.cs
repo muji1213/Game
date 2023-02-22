@@ -17,7 +17,7 @@ public class StageEnterCamera : MonoBehaviour
     private CameraFollower cameraFollower;
 
     //ムービーを切り上げる値(Lerpのためpositionが0にならない)
-    [Header("パスの進む割合")] [SerializeField] [Range(0.1f, 10)] private float per;
+    [Header("パスを切り上げる距離")] [SerializeField] [Range(0.1f, 10)] private float per;
 
     private void Awake()
     {
