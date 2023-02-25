@@ -131,6 +131,7 @@ MonoBehaviour:
   great: {fileID: 21300000, guid: befd7dd226958e64f824d490d4c81692, type: 3}
   good: {fileID: 21300000, guid: a41396d63c6ba9141b6db48e717c340a, type: 3}
   SE: {fileID: 8300000, guid: 654145e675aaee743ae22870db82b7dd, type: 3}
+  SEVol: 1
   sprite: {fileID: 3741478031524525860}
 --- !u!95 &1797298364075886349
 Animator:

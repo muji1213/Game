@@ -3,11 +3,13 @@ using Cinemachine;
 
 public class Enemy_AirShip : MonoBehaviour
 {
-    private enum State
+    [HideInInspector]
+    public enum State
     {
         NormalAttack,
         ChargeAttack,
-        BombAttack
+        BombAttack,
+        Dead
     }
 
     [SerializeField] [Header("フリスビーの侵入判定")] BossTrigger checkFrisbee;
@@ -18,18 +20,21 @@ public class Enemy_AirShip : MonoBehaviour
     [SerializeField] [Header("通常攻撃の玉")] GameObject bullet_Normal;
     [SerializeField] [Header("チャージ攻撃の玉")] GameObject bullet_Charge;
     [SerializeField] [Header("飛行SE再生用AudioSource")] AudioSource flySource;
-    [SerializeField] [Header("攻撃SE再生用AudioSource")] AudioSource attackSource;
     [SerializeField] [Header("通常攻撃SE")] AudioClip normalAttackSE;
-    [SerializeField] [Header("ボム接地SE")] AudioClip bombInstalledSE;
+    [SerializeField] [Header("通常攻撃のSEの音量")] [Range(0, 1)] float normalAttackSEVol = 1;
+    [SerializeField] [Header("ボム設置SE")] AudioClip bombInstalledSE;
+    [SerializeField] [Header("ボム設置SEの音量")] [Range(0, 1)] float bombInstalledSEVol = 1;
     [SerializeField] [Header("チャージSE")] AudioClip chargeSE;
+    [SerializeField] [Header("チャージSEの音量")] [Range(0, 1)] float chargeSEVol = 1;
     [SerializeField] [Header("チャージ攻撃SE")] AudioClip leserSE;
+    [SerializeField] [Header("チャージ攻撃SEの音量")] [Range(0, 1)] float leserSEVol = 1;
     [SerializeField] [Header("死亡時の煙")] ParticleSystem smoke;
 
     //フリスビーのリジットボディ
     Rigidbody frisbeeRb;
 
     //ステート
-    State state;
+    public State state;
 
     //アニメーター
     [SerializeField] [Header("アニメーター")] private Animator anim;
@@ -58,7 +63,7 @@ public class Enemy_AirShip : MonoBehaviour
     private float rockOnTimer = 0.0f;
 
     //攻撃までのディレイ
-    [SerializeField][Header("ロックオン時間が終了してから実際に弾を発射するまでのディレイ")] private float attackDuration;
+    [SerializeField] [Header("ロックオン時間が終了してから実際に弾を発射するまでのディレイ")] private float attackDuration;
 
     //攻撃時のエフェクト
     [SerializeField] ParticleSystem effect1;
@@ -66,6 +71,9 @@ public class Enemy_AirShip : MonoBehaviour
 
     //通常攻撃の発射位置
     [SerializeField] [Header("通常攻撃発射位置")] GameObject weapon_Normal;
+
+    //通常攻撃の残存時間
+    [SerializeField] [Header("通常攻撃の残存時間")] float normalAttackDestroyTime;
 
 
     //-----------------------------------------
@@ -99,6 +107,9 @@ public class Enemy_AirShip : MonoBehaviour
     //攻撃クールタイムのタイマー
     private float bombAttackCoolTimer = 0.0f;
 
+    //ボム攻撃の残存時間
+    [SerializeField] [Header("爆弾の残存時間")] float bombDestoryTime;
+
     //------------------------------------------------------------
 
     //武器１の位置
@@ -121,8 +132,7 @@ public class Enemy_AirShip : MonoBehaviour
 
     private void Start()
     {
-        flySource.volume *= (SEManager.seManager.SeVolume / 1.0f);
-        attackSource.volume *= (SEManager.seManager.SeVolume / 1.0f);
+        flySource.volume *= (SEManager.seManager.seVol);
 
         //ステートは通常攻撃にしておく
         state = State.NormalAttack;
@@ -160,17 +170,18 @@ public class Enemy_AirShip : MonoBehaviour
             //パスを変更
             dollyCart.m_Path = movePath;
 
-            //フリスビーの方を向きながら後退させたいので、パスを逆走させる
+            //パスの初期位置に移動する
             dollyCart.m_Position = movePath.PathLength;
 
             frisbee = GameObject.FindWithTag("Frisbee");
         }
 
-        //終了位置についたらフラグをおろす
+        //終了位置についたら
         if (dollyCart.m_Path == movePath && isEnd)
         {
             rockOnUI.SetActive(false);
             dollyCart.m_Speed = -frisbeeRb.velocity.z;
+            state = State.Dead;
         }
 
         //パスの最終地点まで行ったら非アクティブに
@@ -179,7 +190,7 @@ public class Enemy_AirShip : MonoBehaviour
             this.gameObject.SetActive(false);
         }
 
-        //スピードを常にフリスビーを同じにする
+
         if (isStart && !isEnd)
         {
             //フリスビーが墜落した場合、攻撃停止する
@@ -188,6 +199,7 @@ public class Enemy_AirShip : MonoBehaviour
                 isEnd = true;
             }
 
+            //スピードを常にフリスビーを同じにする
             dollyCart.m_Speed = -frisbeeRb.velocity.z;
 
             //チャージ攻撃回数と、ボム攻撃回数が同時に起きた場合
@@ -300,7 +312,7 @@ public class Enemy_AirShip : MonoBehaviour
     //通常攻撃
     private void Attack()
     {
-        attackSource.PlayOneShot(normalAttackSE);
+        SEManager.seManager.PlaySE(normalAttackSEVol, normalAttackSE);
 
         //攻撃と同時にタイマーリセット
         rockOnTimer = 0.0f;
@@ -314,35 +326,41 @@ public class Enemy_AirShip : MonoBehaviour
         //アニメーション
         anim.SetTrigger("NormalAttack");
 
-        //左右の発射口から弾を放出
+        //発射口から弾を放出
         GameObject bullet1 = Instantiate(bullet_Normal, weapon_Normal.transform.position, Quaternion.identity);
-        bullet1.GetComponent<Bullet_Normal>().TargetPos = frisbee.transform.position;
+        Bullet_Normal bullet_normal1 = bullet1.GetComponent<Bullet_Normal>();
+        bullet_normal1.TargetPos = frisbee.transform.position;
+        bullet_normal1.DestroyTime = normalAttackDestroyTime;
+        bullet_normal1.AirShip = this;
         effect1.Play();
     }
 
     //チャージ攻撃
     private void ChargeAttack()
     {
-        attackSource.PlayOneShot(chargeSE);
+        SEManager.seManager.PlaySE(chargeSEVol, chargeSE);
 
         anim.SetTrigger("ChargeAttack");
 
         //チャージ攻撃オブジェクトを、武器1から生成
         GameObject leser1 = Instantiate(bullet_Charge, weapon1.transform.position, Quaternion.identity);
         leser1.transform.SetParent(weapon1.transform);
+        Bullet_Charge bullet_Charge1 = leser1.GetComponent<Bullet_Charge>();
 
         //チャージ攻撃の継続時間、および溜め開始から実際に攻撃判定が出るまでの時間を渡す（設定はインスペクタで）
-        leser1.GetComponent<Bullet_Charge>().DestroyTime = chargeAttackTime;
-        leser1.GetComponent<Bullet_Charge>().AttackDelay = chargeAttackDelay;
-
+        bullet_Charge1.DestroyTime = chargeAttackTime;
+        bullet_Charge1.AttackDelay = chargeAttackDelay;
+        bullet_Charge1.AirShip = this;
 
         //チャージ攻撃オブジェクトを、武器2から生成
         GameObject leser2 = Instantiate(bullet_Charge, weapon2.transform.position, Quaternion.identity);
         leser2.transform.SetParent(weapon2.transform);
+        Bullet_Charge bullet_Charge2 = leser2.GetComponent<Bullet_Charge>();
 
         //チャージ攻撃の継続時間、および溜め開始から実際に攻撃判定が出るまでの時間を渡す（設定はインスペクタで）
-        leser2.GetComponent<Bullet_Charge>().DestroyTime = chargeAttackTime;
-        leser2.GetComponent<Bullet_Charge>().AttackDelay = chargeAttackDelay;
+        bullet_Charge2.DestroyTime = chargeAttackTime;
+        bullet_Charge2.AttackDelay = chargeAttackDelay;
+        bullet_Charge2.AirShip = this;
 
 
         //中間地点を超えた場合、射出場所が増える
@@ -351,19 +369,22 @@ public class Enemy_AirShip : MonoBehaviour
             //チャージ攻撃オブジェクトを、武器3から生成
             GameObject leser3 = Instantiate(bullet_Charge, weapon3.transform.position, Quaternion.identity);
             leser3.transform.SetParent(weapon3.transform);
+            Bullet_Charge bullet_Charge3 = leser3.GetComponent<Bullet_Charge>();
 
             //チャージ攻撃の継続時間、および溜め開始から実際に攻撃判定が出るまでの時間を渡す（設定はインスペクタで）
-            leser3.GetComponent<Bullet_Charge>().DestroyTime = chargeAttackTime;
-            leser3.GetComponent<Bullet_Charge>().AttackDelay = chargeAttackDelay;
-
+            bullet_Charge3.DestroyTime = chargeAttackTime;
+            bullet_Charge3.AttackDelay = chargeAttackDelay;
+            bullet_Charge3.AirShip = this;
 
             //チャージ攻撃オブジェクトを、武器3から生成
             GameObject leser4 = Instantiate(bullet_Charge, weapon4.transform.position, Quaternion.identity);
             leser4.transform.SetParent(weapon4.transform);
+            Bullet_Charge bullet_Charge4 = leser4.GetComponent<Bullet_Charge>();
 
             //チャージ攻撃の継続時間、および溜め開始から実際に攻撃判定が出るまでの時間を渡す（設定はインスペクタで）
-            leser4.GetComponent<Bullet_Charge>().DestroyTime = chargeAttackTime;
-            leser4.GetComponent<Bullet_Charge>().AttackDelay = chargeAttackDelay;
+            bullet_Charge4.DestroyTime = chargeAttackTime;
+            bullet_Charge4.AttackDelay = chargeAttackDelay;
+            bullet_Charge4.AirShip = this;
         }
 
         Invoke("PlayLeserSE", chargeAttackDelay);
@@ -372,16 +393,20 @@ public class Enemy_AirShip : MonoBehaviour
     //レーザSE
     private void PlayLeserSE()
     {
-        attackSource.PlayOneShot(leserSE);
+        SEManager.seManager.PlaySE(leserSEVol, leserSE);
     }
 
     //ボム攻撃
     private void BombAttack()
     {
-        attackSource.PlayOneShot(bombInstalledSE);
+        SEManager.seManager.PlaySE(bombInstalledSEVol, bombInstalledSE);
 
+        //ボムを生成、フリスビーの位置と残存時間を渡す
         GameObject bomb = Instantiate(limitBomb, bombWeapon.transform.position, Quaternion.identity);
-        bomb.GetComponent<Bullet_Mine>().Frisbee = frisbee;
+        Bullet_Mine bullet_mine1 = bomb.GetComponent<Bullet_Mine>();
+        bullet_mine1.Frisbee = frisbee;
+        bullet_mine1.DestroyTime = bombDestoryTime;
+        bullet_mine1.AirShip = this;
     }
 
 
@@ -399,17 +424,26 @@ public class Enemy_AirShip : MonoBehaviour
         UIanimator.SetFloat("Speed", 1 + rockOnTimer);
     }
 
+    //トリガー
     private void OnTriggerEnter(Collider other)
     {
+        //終了判定、以降攻撃を行わない
         if (other.CompareTag("End"))
         {
             isEnd = true;
             smoke.Play();
         }
 
+        //中間地点、攻撃速度が上昇する
         if (other.CompareTag("Middle"))
         {
             isMiddle = true;
         }
+    }
+
+    //ステートを返す
+    public State GetState()
+    {
+        return state;
     }
 }

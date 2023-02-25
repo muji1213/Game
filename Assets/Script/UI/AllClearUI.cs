@@ -4,7 +4,8 @@ using UnityEngine;
 public class AllClearUI : MonoBehaviour
 {
     [Header("ï\é¶éûÇ…ó¨Ç∑SE")] [SerializeField] AudioClip SE;
-
+    [Header("ââèoâπó ")] [SerializeField] [Range(0, 1)] float SEVol = 1;
+     
     private float volume;
     private void Awake()
     {
@@ -21,7 +22,7 @@ public class AllClearUI : MonoBehaviour
         BGMManager.bgmManager.BgmVolume = 0.0f;
 
         //SE
-        SEManager.seManager.PlaySe(SE);
+        SEManager.seManager.PlaySE(SEVol, SE);
     }
 
     public void Deactive()

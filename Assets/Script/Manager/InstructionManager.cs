@@ -11,6 +11,7 @@ public class InstructionManager : SceneChanger
 
     [Header("BGM")] [SerializeField] AudioClip bgm;
     [Header("左右ボタン押下SE")] [SerializeField] AudioClip buttonSE;
+    [Header("左右ボタンSEの音量")] [SerializeField] [Range(0, 1)] float buttonSEVol = 1;
 
     //パネルの数
     private int panelNum;
@@ -27,7 +28,7 @@ public class InstructionManager : SceneChanger
     //パネルの次の座標
     private float nextPanelPosX;
 
-    void Start()
+    private void Start()
     {
         //BGM
         BGMManager.bgmManager.PlayBgm(bgm);
@@ -60,12 +61,12 @@ public class InstructionManager : SceneChanger
         }
 
         //最後のパネルなら次へボタンは映さない
-        if(index == panelNum - 1)
+        if (index == panelNum - 1)
         {
             goNextButton.SetActive(false);
         }
         //最初のパネルなら戻るボタンは映さない
-        else if(index == 0)
+        else if (index == 0)
         {
             goPreButton.SetActive(false);
         }
@@ -96,7 +97,7 @@ public class InstructionManager : SceneChanger
         else
         {
             //SE
-            SEManager.seManager.PlaySe(buttonSE);
+            SEManager.seManager.PlaySE(buttonSEVol, buttonSE);
 
             //目標座標を設定する
             nextPanelPosX = currentPanelPosX - (panelWidth + celWidth);
@@ -122,7 +123,7 @@ public class InstructionManager : SceneChanger
         else
         {
             //SE
-            SEManager.seManager.PlaySe(buttonSE);
+            SEManager.seManager.PlaySE(buttonSEVol, buttonSE);
 
             //目標座標を設定
             nextPanelPosX = currentPanelPosX + (panelWidth + celWidth);

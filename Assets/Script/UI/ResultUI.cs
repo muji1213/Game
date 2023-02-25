@@ -13,7 +13,7 @@ public class ResultUI : SceneChanger
     [Header("ノーダメージの時の加点")] [SerializeField] int nodamagePoint;
     [Header("最大HPになるまで走行した時の加点")] [SerializeField] int maxHPPoint;
     
-    void Start()
+    private void Start()
     {
         this.gameObject.SetActive(false);
     }
@@ -54,7 +54,7 @@ public class ResultUI : SceneChanger
         totalPointText.text = (nodamagePoint + maxHPPoint + stageManager.temporarilypoint).ToString() + "ポイント";
     }
 
-     public override void ToStageSelect()
+     public override void ToStageSelectScene()
     {
         //ステージマネージャーに加算
         stageManager.StorePoint(nodamagePoint + maxHPPoint);

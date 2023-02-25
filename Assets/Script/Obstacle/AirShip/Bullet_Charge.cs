@@ -14,8 +14,9 @@ public class Bullet_Charge : Bullet
         base.Start();
     }
 
-    private void FixedUpdate()
+    private new void FixedUpdate()
     {
+        base.FixedUpdate();
         //タイマーが消滅時間を超えたら消す
         if (timer >= destroyTime)
         {

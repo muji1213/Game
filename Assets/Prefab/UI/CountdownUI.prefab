@@ -59,6 +59,7 @@ MonoBehaviour:
   numberImage: {fileID: 5626846964502225346}
   countdownSE: {fileID: 8300000, guid: 1d0adfada48851542bd1e75bbc05e88d, type: 3}
   goSE: {fileID: 8300000, guid: 1d68139f1fcafbf44b40fbbff75c0efc, type: 3}
+  SEVol: 1
   bg: {fileID: 5626846964319834531}
   isCountdownEnd: 0
 --- !u!95 &5626846963804927834

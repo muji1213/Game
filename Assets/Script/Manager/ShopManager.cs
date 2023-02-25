@@ -10,7 +10,10 @@ public class ShopManager : SceneChanger
 
     [Header("BGM")] [SerializeField] AudioClip bgm;
     [Header("購入時の音")] [SerializeField] AudioClip buySE;
-    [Header("ポイントが足りないときの音")] [SerializeField]AudioClip blockSE;
+    [Header("購入時の音の音量")] [SerializeField] [Range(0, 1)] float buySEVol = 1;
+    [Header("ポイントが足りないときの音")] [SerializeField] AudioClip blockSE;
+    [Header("ポイントが足りないときの音の音量")] [SerializeField] [Range(0, 1)] float blockSEVol = 1;
+
 
     //前のポイント
     private int prePoint;
@@ -27,6 +30,7 @@ public class ShopManager : SceneChanger
 
     private void Start()
     {
+       
         //BGM
         BGMManager.bgmManager.PlayBgm(bgm);
     }
@@ -95,13 +99,13 @@ public class ShopManager : SceneChanger
         }
         else if (GameManager.gameManager.point < ItemManager.itemManager.GetItem(num).Price)
         {
-            SEManager.seManager.PlaySe(blockSE);
+            SEManager.seManager.PlaySE(blockSEVol, blockSE);
             Debug.Log("所持ポイントが足りません");
         }
         else
         {
             //SE
-            SEManager.seManager.PlaySe(buySE);
+            SEManager.seManager.PlaySE(buySEVol, buySE);
 
             //売り切れ表示をする
             soldOut.SetActive(true);

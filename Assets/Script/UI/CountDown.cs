@@ -13,6 +13,7 @@ public class CountDown : MonoBehaviour
 
     [Header("321の音")] [SerializeField] AudioClip countdownSE;
     [Header("Goの音")] [SerializeField] AudioClip goSE;
+    [Header("SEの音量")] [SerializeField] [Range(0, 1)] float SEVol = 1;
     [Header("バックグラウンド")] [SerializeField] GameObject bg;
 
     //カウントダウン時間（3,2,1,Goなので+1秒する）
@@ -30,11 +31,17 @@ public class CountDown : MonoBehaviour
     //カウントダウンが終わったかどうか
     [HideInInspector] public bool isCountdownEnd = false;
 
+    //オーディオソース
+    private AudioSource audioSource;
+
     void Start()
     {
         bg.SetActive(false);
         //アニメーターを取得
         anim = GetComponent<Animator>();
+
+        //オーディオソース
+        audioSource = GetComponent<AudioSource>();
     }
 
     /// <summary>
@@ -101,13 +108,13 @@ public class CountDown : MonoBehaviour
         //スプライトの更新があった場合
         if (preSprite != currentSprite)
         {
-            if(currentSprite != go)
+            if (currentSprite != go)
             {
-                SEManager.seManager.PlaySe(countdownSE);
+                SEManager.seManager.PlaySE(SEVol, countdownSE);
             }
             else
             {
-                SEManager.seManager.PlaySe(goSE);
+                SEManager.seManager.PlaySE(SEVol, goSE);
             }
             //アニメーションを再生する
             PlayStartAnimation();

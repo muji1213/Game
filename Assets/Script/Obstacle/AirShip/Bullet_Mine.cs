@@ -12,7 +12,7 @@ public class Bullet_Mine : Bullet
     [SerializeField][Header("爆発のエフェクト")] ParticleSystem bombEffect;
 
     //爆発SE
-    [SerializeField][Header("爆発した際のエフェクト")] AudioClip explosionSE;
+    [SerializeField][Header("爆発した際の音")] AudioClip explosionSE;
 
     //audioSource
     private AudioSource audioSource;
@@ -27,14 +27,15 @@ public class Bullet_Mine : Bullet
         base.Start();
 
         audioSource = GetComponent<AudioSource>();
-        audioSource.volume *= SEManager.seManager.SeVolume / 1;
+        audioSource.volume *= SEManager.seManager.seVol;
 
         hitBox = GetComponent<SphereCollider>();
         hitBox.enabled = false;
     }
 
-    private void FixedUpdate()
+    private new void FixedUpdate()
     {
+        base.FixedUpdate();
         //フリスビーが一定距離まで近づいたら爆発する
         if (Vector3.Distance(frisbee.transform.position, this.transform.position) < 5.0f)
         {

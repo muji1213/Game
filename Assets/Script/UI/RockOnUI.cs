@@ -6,22 +6,18 @@ public class RockOnUI : MonoBehaviour
     private Transform target;
 
     // オブジェクトを映すカメラ
-    [SerializeField] Camera mainCamera;
+    [Header("メインカメラ")][SerializeField] Camera mainCamera;
 
     //UIcam
-    [SerializeField] Camera uiCamera;
+    [Header("UIカメラ")][SerializeField] Camera uiCamera;
 
-    [SerializeField] AudioClip rockOnSE;
-
-    private AudioSource audioSource;
+    [Header("ロックオンSE")][SerializeField] AudioClip rockOnSE;
+    [Header("ロックオンSEの音量")][SerializeField] [Range(0, 1)] float rockOnSEVol = 1;
 
     RectTransform rectTransform;
 
     private void Start()
     {
-        //音量が合わないため、SEマネージャの割合分をかけ、適性音量にする
-        audioSource = GetComponent<AudioSource>();
-        audioSource.volume *= (SEManager.seManager.SeVolume / 1);
         rectTransform = this.GetComponent<RectTransform>();
     }
 
@@ -56,6 +52,6 @@ public class RockOnUI : MonoBehaviour
     //アニメーションイベントで呼ぶ
     public void PlayRockOnSE()
     {
-        audioSource.PlayOneShot(rockOnSE);
+        SEManager.seManager.PlaySE(rockOnSEVol,rockOnSE);
     }
 }

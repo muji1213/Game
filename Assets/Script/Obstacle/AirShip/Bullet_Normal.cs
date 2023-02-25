@@ -22,8 +22,9 @@ public class Bullet_Normal : Bullet
         direction = (targetPos - this.transform.position).normalized;
     }
 
-    private void FixedUpdate()
+    private new void FixedUpdate()
     {
+        base.FixedUpdate();
         transform.position += direction * bulletSpeed;
     }
 

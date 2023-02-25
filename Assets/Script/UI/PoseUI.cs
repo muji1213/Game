@@ -6,7 +6,7 @@ public class PoseUI : SceneChanger
     //ステージマネージャー
     private StageManager stageManager;
     
-    void Start()
+    private void Start()
     {
         //初期では非表示
         this.gameObject.SetActive(false);

@@ -84,7 +84,7 @@ public class CameraFollower : MonoBehaviour
 
     //カメラの追従対象をかえる
     //最初はUnityちゃんに追従し、フリスビーを投げた瞬間に、フリスビーにターゲットを変更
-    public void changeTarget(GameObject newTarget)
+    public void ChangeTarget(GameObject newTarget)
     {
         target = newTarget;
     }

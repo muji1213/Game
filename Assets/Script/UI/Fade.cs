@@ -3,8 +3,6 @@ using UnityEngine;
 //フェードイン
 public class Fade : MonoBehaviour
 {
-    [Header("SE")] [SerializeField] AudioClip SE;
-
     //アニメーター
     private Animator anim;
 
@@ -14,7 +12,6 @@ public class Fade : MonoBehaviour
     void Start()
     {
         anim = GetComponent<Animator>();
-        SEManager.seManager.PlaySe(SE);
        /* StartAnim();*/
     }
 

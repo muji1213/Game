@@ -26,9 +26,13 @@ public class StageManager : SceneChanger
 
     [Header("BGM")] [SerializeField] AudioClip bgm;
     [Header("ターゲットとの衝突時のSE")] [SerializeField] AudioClip colSE;
+    [Header("衝突SEの音量")] [SerializeField] [Range(0, 1)] float colSEVol = 1;
     [Header("ターゲットが吹っ飛ぶSE")] [SerializeField] AudioClip blowSE;
+    [Header("吹っ飛びSEの音量")] [SerializeField] [Range(0, 1)] float blowSEVol = 1;
     [Header("リザルト表示時のSE")] [SerializeField] AudioClip successSE;
+    [Header("リザルトSEの音量")] [SerializeField] [Range(0, 1)] float successSEVol = 1;
     [Header("ミスしたときのSE")] [SerializeField] AudioClip missedSE;
+    [Header("ミスSEの音量")] [SerializeField] [Range(0, 1)] float missSEVol = 1;
     [Header("ステージ入場カメラ")] [SerializeField] StageEnterCamera stageEnterCamera;
 
     [HideInInspector] public int temporarilypoint; //ステージで取得したポイントを保持、ステージクリア後、ゲームマネージャに加算する
@@ -95,7 +99,7 @@ public class StageManager : SceneChanger
 
                 if (stageEnterCamera.MovieFinished())
                 {
-                    cameraFollower.enabled = true;             
+                    cameraFollower.enabled = true;
                 }
                 else
                 {
@@ -135,7 +139,7 @@ public class StageManager : SceneChanger
     /// UIを表示
     /// ハートの個数をセット
     /// </summary>
-    public void SetUI(int frisbeeHP)
+    public void SetUIAndLife(int frisbeeHP)
     {
         //
         evaluateUI.SetActive(true);
@@ -180,7 +184,7 @@ public class StageManager : SceneChanger
     public IEnumerator Finish()
     {
         //SE
-        SEManager.seManager.PlaySe(colSE);
+        SEManager.seManager.PlaySE(colSEVol, colSE);
 
         //フィニッシュキャンバスをONに
         ActiveFinishCanvas();
@@ -199,7 +203,7 @@ public class StageManager : SceneChanger
         Time.timeScale = 1.0f;
 
         //SE
-        SEManager.seManager.PlaySe(blowSE);
+        SEManager.seManager.PlaySE(blowSEVol, blowSE);
 
         //フィニッシュキャンバスをOFFに
         DeactiveFinishCanvas();
@@ -241,7 +245,10 @@ public class StageManager : SceneChanger
     /// </summary>
     public void Retry()
     {
-        SEManager.seManager.PlaySe(missedSE);
+        //SE
+        SEManager.seManager.PlaySE(missSEVol,missedSE);
+
+        //どれだけの割合進んだかの割合を出す
         var value = Mathf.Clamp((float)deadPos / (float)goalPos, 0, 1);
         retryUI.SetActive(true);
         retryUI.GetComponent<RetryUI>().SetClearPer(value);
@@ -297,7 +304,7 @@ public class StageManager : SceneChanger
     public void ActiveResult()
     {
         //SE
-        SEManager.seManager.PlaySe(successSE);
+        SEManager.seManager.PlaySE(successSEVol,successSE);
 
         //カメラを変更する
         canvas.worldCamera = finishCam;

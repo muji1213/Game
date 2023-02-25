@@ -5,14 +5,34 @@ using UnityEngine;
 public abstract class Bullet : MonoBehaviour
 {
     //消滅時間
-    [SerializeField][Header("出現から消滅するまでの時間は")]protected int destroyTime;
+    protected float destroyTime;
+
+    //宇宙船のスクリプト
+    protected Enemy_AirShip airShip;
 
     protected void Start()
     {
         Destroy(this.gameObject, destroyTime);
     }
 
-    public int DestroyTime
+    protected void FixedUpdate()
+    {
+        //宇宙船が終了地点までついた時点で、弾を消滅させる
+        if(airShip.GetState() == Enemy_AirShip.State.Dead)
+        {
+            Destroy(this.gameObject);
+        }
+    }
+
+    public Enemy_AirShip AirShip
+    {
+        set
+        {
+            airShip = value;
+        }
+    }
+
+    public float DestroyTime
     {
         set
         {

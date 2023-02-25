@@ -13,9 +13,8 @@ public class Obstacle_Blackhole : UnCollisionable_Obstacle, IMovable
 
     private void Start()
     {
-        //音量が合わないため、SEマネージャの割合分をかけ、適性音量にする
         audioSource = GetComponent<AudioSource>();
-        audioSource.volume *= (SEManager.seManager.SeVolume / 1.0f);
+        audioSource.volume *= (SEManager.seManager.seVol);
     }
 
     private void FixedUpdate()

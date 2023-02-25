@@ -8,6 +8,7 @@ public class Obstacle_Tree : Collisionable_Obstacle, IMovable
     [Header("プレイヤー感知のスクリプト")] [SerializeField] private CheckFrisbeeEnter checkFrisbeeEnter;
 
     [Header("倒壊時のSE")] [SerializeField] AudioClip rotateSE;
+    [Header("倒壊時のSEの音量")] [SerializeField] [Range(0, 1)] float rotateSEVol = 1;
 
     //消滅させるフラグ
     private bool isDestroy = false;
@@ -38,7 +39,7 @@ public class Obstacle_Tree : Collisionable_Obstacle, IMovable
 
             if (!isSounded)
             {
-                SEManager.seManager.PlaySe(rotateSE);
+                SEManager.seManager.PlaySE(rotateSEVol, rotateSE);
                 isSounded = true;
             }
             else

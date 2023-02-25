@@ -4,7 +4,6 @@ using UnityEngine.SceneManagement;
 
 public class TitleManager : SceneChanger
 {
-    [SerializeField] [Header("説明ボタンのSE")] AudioClip SE;
     [SerializeField] [Header("BGM")] AudioClip bgm;
 
     [Header("BGMスライダー")] [SerializeField] Slider bgmSlider;
@@ -19,7 +18,7 @@ public class TitleManager : SceneChanger
     //初期化
     private static bool isInitialized = false;
 
-    void Start()
+    private void Start()
     {
         //初期化
         if (!isInitialized)
@@ -46,22 +45,14 @@ public class TitleManager : SceneChanger
 
         //音量マネージャのボリュームの値に適用する
         BGMManager.bgmManager.BgmVolume = bgmVol;
-        SEManager.seManager.SeVolume = seVol;
+        SEManager.seManager.SEVolume = seVol;
     }
 
-    //説明シーンへ飛ぶ
-    public void ToInstruction()
-    {
-        //SE
-        SEManager.seManager.PlaySe(SE);
-
-        GameManager.gameManager.NextScene("Instruction");
-        SceneManager.LoadScene("Instruction");
-    }
 
     //SEスライダーからマウスを離した時にSEを鳴らす
     public void SEVolChanged()
     {
-        SEManager.seManager.PlaySe(seSliderSE);
+       
+        SEManager.seManager.PlaySE(128, seSliderSE);
     }
 }

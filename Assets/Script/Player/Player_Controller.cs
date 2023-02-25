@@ -14,11 +14,13 @@ public class Player_Controller : MonoBehaviour
     [Header("プレイヤーの加速度")] [SerializeField] AnimationCurve runCurve;
     [Header("接地判定チェック")] [SerializeField] GroundChecker groundChecker;
     [Header("ダメージ受けた時のSE")] [SerializeField] AudioClip damageSE;
+    [Header("ダメージSEの音量")][SerializeField] [Range(0, 1)] float damageSEVol = 1;
     [Header("ダメージ受けた時のエフェクト")] ParticleSystem damageEffect;
     [Header("コイン取得時のエフェクト")] [SerializeField] ParticleSystem coinEffect;
     [Header("コイン取得時のSE")] [SerializeField] AudioClip coinSE;
-    [Header("走るSE")] [SerializeField] AudioClip runSE;
+    [Header("コインSEの音量")] [SerializeField] [Range(0, 1)] float coinSEVol = 1;
     [Header("ライフアップSE")] [SerializeField] AudioClip lifeUP;
+    [Header("ライフアップSEの音量")] [SerializeField] [Range(0, 1)] float lifeUPSEVol = 1;
     [Header("ライフアップエフェクト")] [SerializeField] ParticleSystem lifeUPEffect;
     [Header("どれくらい走れば最大HPになるか")] [SerializeField] public int MaxHPTime;
 
@@ -94,11 +96,6 @@ public class Player_Controller : MonoBehaviour
 
     private void FixedUpdate()
     {
-        if (!audioSource.enabled)
-        {
-            audioSource.enabled = true;
-        }
-        audioSource.pitch = zSpeed / 3;
 
         //接地判定をGroundCheckerのメソッドから取得
         isGround = groundChecker.CheckGround();
@@ -201,7 +198,7 @@ public class Player_Controller : MonoBehaviour
         int frisbeeHP = CaluculateFrisbeeHP((int)runTime);
 
         //UIを表示
-        stageManager.SetUI(frisbeeHP);
+        stageManager.SetUIAndLife(frisbeeHP);
 
         Debug.Log(frisbeeHP);
 
@@ -252,7 +249,7 @@ public class Player_Controller : MonoBehaviour
                 rb.velocity = Vector3.zero;
                 rb.useGravity = true;
                 rb.AddForce(direciton, ForceMode.Impulse);
-                SEManager.seManager.PlaySe(damageSE);
+                SEManager.seManager.PlaySE(damageSEVol, damageSE);
                 break;
         }
 
@@ -324,7 +321,7 @@ public class Player_Controller : MonoBehaviour
     //エフェクトはインスペクタから設定
     public void PlayCoinEffect()
     {
-        SEManager.seManager.PlaySe(coinSE);
+        SEManager.seManager.PlaySE(coinSEVol, coinSE);
         coinEffect.Play();
     }
 
@@ -336,7 +333,7 @@ public class Player_Controller : MonoBehaviour
     public void LifeUP()
     {
         //SE
-        SEManager.seManager.PlaySe(lifeUP);
+        SEManager.seManager.PlaySE(lifeUPSEVol, lifeUP);
         isLifeUP = true;
 
         //エフェクト

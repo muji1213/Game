@@ -5,25 +5,20 @@ using UnityEngine;
 public class BossEncountUI : MonoBehaviour
 {
     [Header("SE")] [SerializeField] AudioClip SE;
-
-    AudioSource audioSource;
+    [Header("音量")] [SerializeField] [Range(0, 1)] float SEVol = 1;
 
     private Animator anim;
 
     void Awake()
-    {    
+    {
         this.gameObject.SetActive(false);
     }
 
     private void OnEnable()
     {
-        //音量が合わないため、SEマネージャの割合分をかけ、適性音量にする
         anim = GetComponent<Animator>();
-        audioSource = GetComponent<AudioSource>();
-        audioSource.volume *= (SEManager.seManager.SeVolume / 1.0f);
-
         //SE
-        audioSource.PlayOneShot(SE);
+        SEManager.seManager.PlaySE(SEVol, SE);
     }
 
     // Update is called once per frame

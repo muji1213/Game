@@ -9542,6 +9542,7 @@ MonoBehaviour:
   bombInstalledSE: {fileID: 8300000, guid: 2051958b72ee50b49973e24da65dee1d, type: 3}
   chargeSE: {fileID: 8300000, guid: 7b3402d3a5867e54f9ab8b94bc81d0a4, type: 3}
   leserSE: {fileID: 8300000, guid: 07be86d2bc5020e44ac23be199222817, type: 3}
+  smoke: {fileID: 0}
   anim: {fileID: 5297001773474816475}
   startSpeed: 120
   rockOnTime: 3
@@ -9549,12 +9550,14 @@ MonoBehaviour:
   effect1: {fileID: 8630766987301871527}
   effect2: {fileID: 5097730513839265828}
   weapon_Normal: {fileID: 3054308795547013098}
+  normalAttackDestroyTime: 2
   chargeAttackNum: 3
   chargeAttackTime: 4
   chargeAttackDelay: 2
   limitBomb: {fileID: 4655584794235961377, guid: 5ae91dcd5e8445e49b09e479e0ec3de4, type: 3}
   bombAttackNum: 2
   bombAttackCoolTime: 3
+  bombDestoryTime: 10
   weapon1: {fileID: 119391430060110658}
   weapon2: {fileID: 2484805279968942064}
   weapon3: {fileID: 5837405352953821818}

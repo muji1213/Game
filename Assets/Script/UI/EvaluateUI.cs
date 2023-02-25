@@ -11,18 +11,19 @@ public class EvaluateUI : MonoBehaviour
     [Header("グッド")] [SerializeField] Sprite good;
 
     [Header("SE")] [SerializeField] AudioClip SE;
+    [Header("SEの音量")] [SerializeField] [Range(0, 1)] float SEVol = 1;
 
-    [Header("画像のインスタンス")][SerializeField]private Image sprite;
+    [Header("画像のインスタンス")] [SerializeField] private Image sprite;
 
     private void Awake()
-    {  
+    {
         this.gameObject.SetActive(false);
     }
 
     private void OnEnable()
     {
         //ステージマネージャ側からactiveにされるので、Enableで一度だけ呼ぶ
-        SEManager.seManager.PlaySe(SE);
+        SEManager.seManager.PlaySE(SEVol, SE);
     }
 
     //typeはFrisbeeのHP

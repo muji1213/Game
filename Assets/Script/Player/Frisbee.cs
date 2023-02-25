@@ -23,20 +23,26 @@ public abstract class Frisbee : MonoBehaviour
     [SerializeField] float minZspeed; //奥移動最低速度
     [SerializeField] float rotateSpeed; //回転速度
     [SerializeField] float gravity; //重力
+    [SerializeField] float invincibleTime; //無敵時間
+    [SerializeField] float blinkInterval; //無敵時間中の点滅間隔
     [SerializeField] AnimationCurve speedCurve; //方向転換した際の加速度
     [SerializeField] AnimationCurve acceleteCurve; //加速ボタンを押した際のフリスビーの速度
     [Header("ダメージ受けた時のSE")] [SerializeField] AudioClip damageSE;
+    [Header("ダメージSEの音量")] [SerializeField] [Range(0, 1)] float damageSEVol = 1;
     [Header("ダメージ受けた時のエフェクト")] [SerializeField] GameObject damageEffect;
     [Header("コイン取得時のエフェクト")] [SerializeField] ParticleSystem coinEffect;
     [Header("コイン取得時のSE")] [SerializeField] AudioClip coinSE;
+    [Header("コイン取得SEの音量")] [SerializeField] [Range(0, 1)] float coinSEVol = 1;
     [Header("投げた時のSE")] [SerializeField] AudioClip throwSE;
+    [Header("投げた時のSEの音量")][SerializeField] [Range(0, 1)] float throwSEVol = 1;
+    [Header("効果音用のオーディオソース")] [SerializeField] AudioSource seAudioSource;
 
     private int HP; //HP
     private float moveTime; //停止、もしくは方向転換してからの経過時間
     private float moveSpeed; //移動速度
-    [Header("無敵時間")] [SerializeField] float invincibleTime; //無敵時間
-    [Header("無敵時間中の点滅周期")] [SerializeField] float invincibleCycle;
+
     private float invincibleTimer; //無敵経過時間
+    private float blinkTimer; //無敵時間点滅のタイマー
     private float acceleteTime; //加速ボタンを押している時間
     private float throwSpeed;　//runステージからスタート地点につくまでの速さ
     private Vector3 toVector; //スタート地点までのベクトル
@@ -106,7 +112,7 @@ public abstract class Frisbee : MonoBehaviour
         cameraFollower = GameObject.Find("Main Camera").GetComponent<CameraFollower>();
 
         //カメラの追従対象をUnityちゃんからフリスビーに変える
-        cameraFollower.changeTarget(this.gameObject);
+        cameraFollower.ChangeTarget(this.gameObject);
 
         //カメラの位置調整
         cameraFollower.ZoomToTarget(-5, 0, new Vector3(0, 0, 0));
@@ -115,7 +121,7 @@ public abstract class Frisbee : MonoBehaviour
         throwSpeed = (StartPos.transform.position.z - this.transform.position.z) / 1.5f;
 
         //SE
-        SEManager.seManager.PlaySe(throwSE);
+        SEManager.seManager.PlaySE(throwSEVol,throwSE);
     }
 
 
@@ -194,8 +200,19 @@ public abstract class Frisbee : MonoBehaviour
             {
                 if (invincibleTimer < invincibleTime)
                 {
+                    //点滅時間タイマー
+                    blinkTimer += Time.deltaTime;
+
                     //無敵中点滅させる
-                    Blink();
+                    //インターバルを超えたら
+                    if (blinkTimer > blinkInterval)
+                    {
+                        //表示非表示を反転
+                        render.enabled = !render.enabled;
+
+                        //タイマーリセット
+                        blinkTimer = 0.0f;
+                    }
 
                     //レイヤーをほかのレイヤーにすることで、障害物との衝突を回避させる
                     this.gameObject.layer = 10;
@@ -473,22 +490,9 @@ public abstract class Frisbee : MonoBehaviour
     /// </summary>
     public void ReduceLife()
     {
-        SEManager.seManager.PlaySe(damageSE);
+        SEManager.seManager.PlaySE(damageSEVol, damageSE);
         HP -= 1;
         stageManager.ReduceHPUI();
-    }
-
-    /// <summary>
-    /// 点滅メソッド
-    /// 無敵時間をわかりやすくするために、点滅させる
-    /// </summary>
-    public void Blink()
-    {
-        //sinカーブの値を取得
-        var level = Mathf.Repeat(invincibleTimer, 1);
-
-        //明滅 levelより値が低いなら非表示、levelのほうが高いなら表示
-        render.enabled = level >= invincibleCycle * 0.5f;
     }
 
     /// <summary>
@@ -508,7 +512,7 @@ public abstract class Frisbee : MonoBehaviour
     //エフェクトはインスペクタから設定
     public void PlayCoinEffect()
     {
-        SEManager.seManager.PlaySe(coinSE);
+        SEManager.seManager.PlaySE(coinSEVol, coinSE);
         coinEffect.Play();
     }
 

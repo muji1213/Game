@@ -13,10 +13,10 @@ public class StageSelectManager : SceneChanger
     // eventSystemを取得するための変数宣言
     [Header("イベントシステム")] [SerializeField] EventSystem eventSystem;
 
-    [Header("ステージへ行く際のダイアログ")] [SerializeField] GameObject StartSelectUI;
-    [Header("スタートボタン")] [SerializeField] private Button StartButton;
+    [Header("ステージへ行く際のダイアログ")] [SerializeField] GameObject startSelectUI;
+    [Header("スタートボタン")] [SerializeField] private Button startButton;
     [Header("フリスビー選択のボタンプレハブ")] [SerializeField] GameObject selectButtonPrefab;
-    [Header("アイテムパネル")] [SerializeField] GameObject ItemPanel;
+    [Header("アイテムパネル")] [SerializeField] GameObject itemPanel;
     [Header("フリスビーのフレーバーテキスト表示用テキスト")] [SerializeField] Text frisInfoText;
     [Header("ステージ名テキスト")] [SerializeField] Text stageNameText;
     [Header("ステージ説明テキスト")] [SerializeField] Text stageInfoText;
@@ -29,7 +29,9 @@ public class StageSelectManager : SceneChanger
 
     [Header("BGM")] [SerializeField] AudioClip bgm;
     [Header("ボタン押下時のSE")] [SerializeField] AudioClip inputSE;
+    [Header("ボタンSEの音量")] [SerializeField] [Range(0, 1)] float inputSEVol = 1;
     [Header("キャンセル時のSE")] [SerializeField] AudioClip cancelSE;
+    [Header("キャンセルSEの音量")] [SerializeField] [Range(0, 1)] float canselSEVol = 1;
 
     //初期化したかどうか、シーン間で保持される
     private static bool isInicialized = false;
@@ -57,11 +59,11 @@ public class StageSelectManager : SceneChanger
 
             //ステージ0
             string stage0 = "山にカコまれているクンレンジョウ。カケダシのフリスビストはココでレンシュウだ！";
-            stages.Add(0, new Stage(0, "クンレンジョウ", stage0, Resources.Load<Sprite>("Stage0_Image"), false, false));           
+            stages.Add(0, new Stage(0, "クンレンジョウ", stage0, Resources.Load<Sprite>("Stage0_Image"), false, true));
 
             //ステージ1
             string stage1 = "カゼがあれくるうキョウコク。イワがむきだしで、アルくだけでもせいいっぱい";
-            stages.Add(1, new Stage(1, "ボウフウのキョウコク", stage1, Resources.Load<Sprite>("Stage1_Image"), false, false));         
+            stages.Add(1, new Stage(1, "ボウフウのキョウコク", stage1, Resources.Load<Sprite>("Stage1_Image"), false, true));
 
             //ステージ2
             string stage2 = "ウチュウくうかん。いつもよりカラダがカルい！ブラックホールにチュウイだ！";
@@ -74,10 +76,10 @@ public class StageSelectManager : SceneChanger
     private void Start()
     {
         //ステージ選択時の確認ダイアログをOFF
-        StartSelectUI.SetActive(false);
+        startSelectUI.SetActive(false);
 
         //ステージ選択ボタンはステージが初めて選択されるまでOFF
-        StartButton.interactable = false;
+        startButton.interactable = false;
 
         //フリスビー説明テキストをOFF
         frisInfoText.text = null;
@@ -133,9 +135,9 @@ public class StageSelectManager : SceneChanger
 
 
     //ショップのシーンへ飛ぶ
-    public void GoShopScene()
+    public void ToShopScene()
     {
-        SEManager.seManager.PlaySe(inputSE);
+        SEManager.seManager.PlaySE(inputSEVol, inputSE);
         GameManager.gameManager.NextScene("Shop");
         SceneManager.LoadScene("Shop");
     }
@@ -149,21 +151,22 @@ public class StageSelectManager : SceneChanger
             //所持中かどうか判定
             if (ItemManager.itemManager.GetItemFlag(frisbeeItem.Num))
             {
+                //すでにパネルが作られているなら、削除して作り直す
                 CheckChild(frisbeeItem.Name);
                 CreateFrisbeeSelectButton(frisbeeItem);
             }
         }
 
-        SEManager.seManager.PlaySe(inputSE);
+        SEManager.seManager.PlaySE(inputSEVol, inputSE);
         //UIを見えるようにする
-        StartSelectUI.SetActive(true);
+        startSelectUI.SetActive(true);
     }
 
     //パネルの子オブジェクトを調べる。(所持中のフリスビー調べる)
     //同じ名前のフリスビーのボタンがあるなら削除する
     private void CheckChild(string name)
     {
-        foreach (Transform child in ItemPanel.transform)
+        foreach (Transform child in itemPanel.transform)
         {
             if (name == child.name)
             {
@@ -240,7 +243,7 @@ public class StageSelectManager : SceneChanger
     //ボタンをクリックした際、ステージ情報をUIに表示する
     public void DisplayStageInfo(int stageNum)
     {
-        SEManager.seManager.PlaySe(inputSE);
+        SEManager.seManager.PlaySE(inputSEVol, inputSE);
         //選択されたステージ
         Stage selectedStage = GetStage(stageNum);
 
@@ -250,7 +253,7 @@ public class StageSelectManager : SceneChanger
         stageSprite.sprite = selectedStage.StageImage;
 
         //スタートボタンを押せるように
-        StartButton.interactable = true;
+        startButton.interactable = true;
 
         //ステージ番号を代入する
         selectedStageNum = selectedStage.StageNum;
@@ -263,7 +266,7 @@ public class StageSelectManager : SceneChanger
         GameObject selectButton = Instantiate(selectButtonPrefab);
 
         //Grid layoutの子供にする(ItemPanelがGrid)
-        selectButton.transform.SetParent(ItemPanel.transform);
+        selectButton.transform.SetParent(itemPanel.transform);
 
         //大きさや位置を調整
         selectButton.name = frisbeeItem.Name;
@@ -301,7 +304,7 @@ public class StageSelectManager : SceneChanger
         arrow.transform.localPosition = eventSystem.currentSelectedGameObject.transform.localPosition;
 
         //SE
-        SEManager.seManager.PlaySe(inputSE);
+        SEManager.seManager.PlaySE(inputSEVol, inputSE);
 
         //フリスビーの特性を表示
         frisInfoText.text = frisbeeItem.Info;
@@ -315,13 +318,13 @@ public class StageSelectManager : SceneChanger
     public void DeactiveStartUI()
     {
         arrow.SetActive(false);
-        SEManager.seManager.PlaySe(cancelSE);
-        StartSelectUI.SetActive(false);
+        SEManager.seManager.PlaySE(canselSEVol, cancelSE);
+        startSelectUI.SetActive(false);
     }
 
     //ステージにいく処理
     //フリスビーを選択していない場合、行けない
-    public void GoStageScene()
+    public void ToStageScene()
     {
         if (selectedFrisbee == null)
         {

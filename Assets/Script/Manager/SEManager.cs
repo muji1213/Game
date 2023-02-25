@@ -3,7 +3,12 @@ using UnityEngine;
 public class SEManager : MonoBehaviour
 {
     public static SEManager seManager = null;
-    AudioSource seAudioSource;
+
+    //オーディオソース
+    public AudioSource seAudioSource;
+
+    //音量
+    public float seVol;
 
     void Start()
     {
@@ -20,26 +25,26 @@ public class SEManager : MonoBehaviour
         DontDestroyOnLoad(gameObject);
     }
 
-    //SEのボリューム
-    public float SeVolume
+    //SEのボリューム設定
+    public float SEVolume
     {
         get
         {
-            return seAudioSource.volume;
+            return seVol;
         }
         set
         {
-            seAudioSource.volume = Mathf.Clamp01(value);
+            seVol = value;
         }
     }
 
-    //SEを鳴らす
-    public void PlaySe(AudioClip clip)
+
+    //SEの再生
+    //引数で受け取ったボリューム(0 ~ 256)にタイトルで設定したSEのボリュームの割合(0 ~ 1)をかけて再生する
+    public void PlaySE(float volume, AudioClip clip)
     {
-        if (clip == null)
-        {
-            return;
-        }
+        seAudioSource.volume = volume;
+        seAudioSource.volume *= seVol;
         seAudioSource.PlayOneShot(clip);
     }
 }

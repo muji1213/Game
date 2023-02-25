@@ -320,7 +320,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 361954310}
         m_TargetAssemblyTypeName: TitleManager, Assembly-CSharp
-        m_MethodName: ToInstruction
+        m_MethodName: ToInstructionScene
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -470,7 +470,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &154655959
 RectTransform:
   m_ObjectHideFlags: 0
@@ -859,7 +859,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b7804155908d98a4a88e52f116306845, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  SE: {fileID: 8300000, guid: 060a19e7b1c4c7b4ca429429be3aae93, type: 3}
+  inputSEVol: 128
+  cancelSEVol: 128
   bgm: {fileID: 8300000, guid: 2d3faf6165c4c1545bf4ecd6d2dcf8e3, type: 3}
   bgmSlider: {fileID: 2079283749}
   seSlider: {fileID: 691199896}
@@ -2307,7 +2308,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 361954310}
         m_TargetAssemblyTypeName: SceneChanger, Assembly-CSharp
-        m_MethodName: ToStageSelect
+        m_MethodName: ToStageSelectScene
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -2423,6 +2424,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ec8d8e4553fa7e34bac3ad57dc2f7479, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  seAudioSource: {fileID: 0}
+  seVol: 0
 --- !u!82 &1812566466
 AudioSource:
   m_ObjectHideFlags: 0

@@ -12,7 +12,7 @@ public class Obstacle_Wind : UnCollisionable_Obstacle
     private void Start()
     {
         audioSource = GetComponent<AudioSource>();
-        audioSource.volume *= (SEManager.seManager.SeVolume / 1.0f);
+        audioSource.volume *= (SEManager.seManager.seVol);
     }
 
     //フリスビーが範囲内にいるとき
