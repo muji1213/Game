@@ -31,7 +31,7 @@ public class Obstacle_Wind : UnCollisionable_Obstacle
             {
                 //ˆê’è•ûŒü‚É—Í‚ð‚©‚¯‘±‚¯‚é
                 Rigidbody frisbeeRb = other.GetComponent<Rigidbody>();
-                frisbeeRb.AddForce((windVec) * windStrength / 2);
+                frisbeeRb.AddForce((windVec) * windStrength / 3);
             }
         }
     }

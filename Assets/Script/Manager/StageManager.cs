@@ -139,7 +139,7 @@ public class StageManager : SceneChanger
     /// UIを表示
     /// ハートの個数をセット
     /// </summary>
-    public void SetUIAndLife(int frisbeeHP)
+    public void SetUIAndLife(int frisbeeHP, bool isLifeUp)
     {
         //
         evaluateUI.SetActive(true);
@@ -148,6 +148,33 @@ public class StageManager : SceneChanger
         //
         lifeUI.SetActive(true);
         lifeUI.GetComponent<Life>().SetInitialLife(frisbeeHP);
+
+        //最大HPまで走ったフラグをTrueにする
+
+        //ライフアップを取っていた場合、4が最大HPになる
+        if (isLifeUp)
+        {
+            if(frisbeeHP == 4)
+            {
+                isMaxHP = true;
+            }
+            else
+            {
+                isMaxHP = fadeIn;
+            }
+        }
+        //取っていない場合、3が最大HPになる
+        else
+        {
+            if(frisbeeHP == 3)
+            {
+                isMaxHP = true;
+            }
+            else
+            {
+                isMaxHP = false;
+            }
+        }
     }
 
     //ステージで取得したポイントを一時的に保持する
@@ -246,7 +273,7 @@ public class StageManager : SceneChanger
     public void Retry()
     {
         //SE
-        SEManager.seManager.PlaySE(missSEVol,missedSE);
+        SEManager.seManager.PlaySE(missSEVol, missedSE);
 
         //どれだけの割合進んだかの割合を出す
         var value = Mathf.Clamp((float)deadPos / (float)goalPos, 0, 1);
@@ -304,7 +331,7 @@ public class StageManager : SceneChanger
     public void ActiveResult()
     {
         //SE
-        SEManager.seManager.PlaySE(successSEVol,successSE);
+        SEManager.seManager.PlaySE(successSEVol, successSE);
 
         //カメラを変更する
         canvas.worldCamera = finishCam;

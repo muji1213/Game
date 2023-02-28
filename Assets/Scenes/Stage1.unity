@@ -3815,7 +3815,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7416507133717902102, guid: 80a7dc14d486a41418a515d825bb03e8, type: 3}
       propertyPath: windStrength
-      value: 220
+      value: 7.2
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 80a7dc14d486a41418a515d825bb03e8, type: 3}
@@ -4095,7 +4095,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7416507133717902102, guid: 80a7dc14d486a41418a515d825bb03e8, type: 3}
       propertyPath: windStrength
-      value: 350
+      value: 5
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 80a7dc14d486a41418a515d825bb03e8, type: 3}
@@ -5924,7 +5924,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7416507133717902102, guid: 80a7dc14d486a41418a515d825bb03e8, type: 3}
       propertyPath: windStrength
-      value: 300
+      value: 6.5
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 80a7dc14d486a41418a515d825bb03e8, type: 3}
@@ -8810,7 +8810,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7416507133717902102, guid: 80a7dc14d486a41418a515d825bb03e8, type: 3}
       propertyPath: windStrength
-      value: 100
+      value: 10
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 80a7dc14d486a41418a515d825bb03e8, type: 3}

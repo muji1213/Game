@@ -14,18 +14,21 @@ public abstract class Frisbee : MonoBehaviour
         RIGHTUP,
         LEFTUP,
         RIGHTDOWN,
-        LEFTDOWN
+        LEFTDOWN,
+        STOP
     }
 
-    [SerializeField] float speed; //縦横移動速度
-    [SerializeField] float zSpeed; //奥移動速度
-    [SerializeField] float maxZspeed; //奥移動最大速度
-    [SerializeField] float minZspeed; //奥移動最低速度
-    [SerializeField] float rotateSpeed; //回転速度
-    [SerializeField] float gravity; //重力
-    [SerializeField] float invincibleTime; //無敵時間
-    [SerializeField] float blinkInterval; //無敵時間中の点滅間隔
-    [SerializeField] AnimationCurve speedCurve; //方向転換した際の加速度
+    [Header("縦横移動速度")] [SerializeField] float speed; //縦横移動速度
+    [Header("無入力時の減速速度")] [SerializeField] float brake; //ブレーキ
+    [Header("方向転換時の減速速度")] [SerializeField] float deceleration; // 方向転換時の減速速度
+    [Header("縦横移動の加速度")] [SerializeField] AnimationCurve forceCurve; //加速度
+    [Header("奥移動速度")] [SerializeField] float zSpeed; //奥移動速度
+    [Header("奥移動最大速度")] [SerializeField] float maxZspeed; //奥移動最大速度
+    [Header("奥移動最低速度")] [SerializeField] float minZspeed; //奥移動最低速度
+    [Header("回転速度")] [SerializeField] float rotateSpeed; //回転速度
+    [Header("重力")] [SerializeField] float gravity; //重力
+    [Header("無敵時間")] [SerializeField] float invincibleTime; //無敵時間
+    [Header("無敵時間中の点滅間隔")] [SerializeField] float blinkInterval; //無敵時間中の点滅間隔
     [SerializeField] AnimationCurve acceleteCurve; //加速ボタンを押した際のフリスビーの速度
     [Header("ダメージ受けた時のSE")] [SerializeField] AudioClip damageSE;
     [Header("ダメージSEの音量")] [SerializeField] [Range(0, 1)] float damageSEVol = 1;
@@ -34,12 +37,11 @@ public abstract class Frisbee : MonoBehaviour
     [Header("コイン取得時のSE")] [SerializeField] AudioClip coinSE;
     [Header("コイン取得SEの音量")] [SerializeField] [Range(0, 1)] float coinSEVol = 1;
     [Header("投げた時のSE")] [SerializeField] AudioClip throwSE;
-    [Header("投げた時のSEの音量")][SerializeField] [Range(0, 1)] float throwSEVol = 1;
+    [Header("投げた時のSEの音量")] [SerializeField] [Range(0, 1)] float throwSEVol = 1;
     [Header("効果音用のオーディオソース")] [SerializeField] AudioSource seAudioSource;
 
     private int HP; //HP
     private float moveTime; //停止、もしくは方向転換してからの経過時間
-    private float moveSpeed; //移動速度
 
     private float invincibleTimer; //無敵経過時間
     private float blinkTimer; //無敵時間点滅のタイマー
@@ -79,7 +81,6 @@ public abstract class Frisbee : MonoBehaviour
     private Frisbee_HurtBox frisbee_Hurt; //当たり判定
     private Renderer render; //レンダラー
     private StageManager stageManager; //ステージマネージャー(ポーズの呼び出し、リトライUIの呼びだしに必要)
-
 
     void Start()
     {
@@ -121,7 +122,7 @@ public abstract class Frisbee : MonoBehaviour
         throwSpeed = (StartPos.transform.position.z - this.transform.position.z) / 1.5f;
 
         //SE
-        SEManager.seManager.PlaySE(throwSEVol,throwSE);
+        SEManager.seManager.PlaySE(throwSEVol, throwSE);
     }
 
 
@@ -243,7 +244,7 @@ public abstract class Frisbee : MonoBehaviour
     /// </summary>
     public void Move()
     {
-        moveSpeed = speed;
+        float reverseForce;
         if (upKey && rightKey)
         {
             currentState = State.RIGHTUP;
@@ -279,8 +280,12 @@ public abstract class Frisbee : MonoBehaviour
         else
         {
             //何も入力していない場合、0
-            moveSpeed = 0.0f;
-            moveTime = 0.0f;
+            currentState = State.STOP;
+            moveTime -= Time.deltaTime;
+            if (moveTime < 0)
+            {
+                moveTime = 0.0f;
+            }
         }
 
         //前回の状態と違ったら速度をリセットする
@@ -294,36 +299,107 @@ public abstract class Frisbee : MonoBehaviour
             moveTime += Time.deltaTime;
         }
 
-        //アニメーションカーブに基づいて加速させる
+        //アニメーションカーブに基づいてAddForce
         //moveTimeが多くなるほど、速度が上がるようにアニメーションカーブを設定
-        moveSpeed *= speedCurve.Evaluate(moveTime);
+        float baseSpeed = forceCurve.Evaluate(moveTime);
 
         //各方向移動
         switch (currentState)
         {
             case State.UP:
-                rb.velocity = new Vector3(0, moveSpeed, rb.velocity.z);
+                if (rb.velocity.y < 0)
+                {
+                    reverseForce = brake;
+                }
+                else
+                {
+                    reverseForce = 1;
+                }
+                rb.AddForce(Vector3.up * baseSpeed * speed * reverseForce);
                 break;
+
             case State.DOWN:
-                rb.velocity = new Vector3(0, -moveSpeed, rb.velocity.z);
+                if (rb.velocity.y > 0)
+                {
+                    reverseForce = brake;
+                }
+                else
+                {
+                    reverseForce = 1;
+                }
+                rb.AddForce(Vector3.down * baseSpeed * speed * reverseForce);
                 break;
+
             case State.LEFT:
-                rb.velocity = new Vector3(-moveSpeed, 0, rb.velocity.z);
+                if (rb.velocity.x > 0)
+                {
+                    reverseForce = brake;
+                }
+                else
+                {
+                    reverseForce = 1;
+                }
+                rb.AddForce(Vector3.left * baseSpeed * speed * reverseForce);
                 break;
+
             case State.RIGHT:
-                rb.velocity = new Vector3(moveSpeed, 0, rb.velocity.z);
+                if (rb.velocity.x < 0)
+                {
+                    reverseForce = brake;
+                }
+                else
+                {
+                    reverseForce = 1;
+                }
+                rb.AddForce(Vector3.right * baseSpeed * speed * reverseForce);
                 break;
+
             case State.RIGHTUP:
-                rb.velocity = new Vector3(moveSpeed, moveSpeed, rb.velocity.z);
+                if (rb.velocity.x < 0 && rb.velocity.y < 0)
+                {
+                    reverseForce = brake;
+                }
+                else
+                {
+                    reverseForce = 0.7f;
+                }
+                rb.AddForce(baseSpeed * speed * reverseForce, baseSpeed * speed * reverseForce, 0);
                 break;
+
             case State.LEFTUP:
-                rb.velocity = new Vector3(-moveSpeed, moveSpeed, rb.velocity.z);
+                if (rb.velocity.x > 0 && rb.velocity.y < 0)
+                {
+                    reverseForce = brake;
+                }
+                else
+                {
+                    reverseForce = 0.7f;
+                }
+                rb.AddForce(-baseSpeed * speed * reverseForce, baseSpeed * speed * reverseForce, 0);
                 break;
+
             case State.RIGHTDOWN:
-                rb.velocity = new Vector3(moveSpeed, -moveSpeed, rb.velocity.z);
+                if (rb.velocity.x < 0 && rb.velocity.y > 0)
+                {
+                    reverseForce = brake;
+                }
+                else
+                {
+                    reverseForce = 0.7f;
+                }
+                rb.AddForce(baseSpeed * speed * reverseForce, -baseSpeed * speed * reverseForce, 0);
                 break;
+
             case State.LEFTDOWN:
-                rb.velocity = new Vector3(-moveSpeed, -moveSpeed, rb.velocity.z);
+                if (rb.velocity.x > 0 && rb.velocity.y > 0)
+                {
+                    reverseForce = baseSpeed;
+                }
+                else
+                {
+                    reverseForce = 0.7f;
+                }
+                rb.AddForce(-baseSpeed * speed * reverseForce, -baseSpeed * speed * reverseForce, 0);
                 break;
         }
 

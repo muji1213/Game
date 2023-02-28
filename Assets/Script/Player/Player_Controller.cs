@@ -14,7 +14,7 @@ public class Player_Controller : MonoBehaviour
     [Header("プレイヤーの加速度")] [SerializeField] AnimationCurve runCurve;
     [Header("接地判定チェック")] [SerializeField] GroundChecker groundChecker;
     [Header("ダメージ受けた時のSE")] [SerializeField] AudioClip damageSE;
-    [Header("ダメージSEの音量")][SerializeField] [Range(0, 1)] float damageSEVol = 1;
+    [Header("ダメージSEの音量")] [SerializeField] [Range(0, 1)] float damageSEVol = 1;
     [Header("ダメージ受けた時のエフェクト")] ParticleSystem damageEffect;
     [Header("コイン取得時のエフェクト")] [SerializeField] ParticleSystem coinEffect;
     [Header("コイン取得時のSE")] [SerializeField] AudioClip coinSE;
@@ -198,7 +198,7 @@ public class Player_Controller : MonoBehaviour
         int frisbeeHP = CaluculateFrisbeeHP((int)runTime);
 
         //UIを表示
-        stageManager.SetUIAndLife(frisbeeHP);
+        stageManager.SetUIAndLife(frisbeeHP, isLifeUP);
 
         Debug.Log(frisbeeHP);
 
