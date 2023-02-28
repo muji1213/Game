@@ -19,8 +19,9 @@ public abstract class Frisbee : MonoBehaviour
     }
 
     [Header("縦横移動速度")] [SerializeField] float speed; //縦横移動速度
-    [Header("無入力時の減速速度")] [SerializeField] float brake; //ブレーキ
-    [Header("方向転換時の減速速度")] [SerializeField] float deceleration; // 方向転換時の減速速度
+    [Header("方向転換時の減速速度")] [SerializeField] float brake; //ブレーキ
+    [Header("無入力時の最低速度")] [SerializeField] float deceleration; // 無入力時の最低速度
+    [Header("無入力時の減速速度")] [SerializeField] float decelerationMutply; //無入力時の減速速度
     [Header("縦横移動の加速度")] [SerializeField] AnimationCurve forceCurve; //加速度
     [Header("奥移動速度")] [SerializeField] float zSpeed; //奥移動速度
     [Header("奥移動最大速度")] [SerializeField] float maxZspeed; //奥移動最大速度
@@ -245,6 +246,7 @@ public abstract class Frisbee : MonoBehaviour
     public void Move()
     {
         float reverseForce;
+
         if (upKey && rightKey)
         {
             currentState = State.RIGHTUP;
@@ -279,24 +281,25 @@ public abstract class Frisbee : MonoBehaviour
         }
         else
         {
-            //何も入力していない場合、0
+            //何も入力していない場合
             currentState = State.STOP;
-            moveTime -= Time.deltaTime;
-            if (moveTime < 0)
-            {
-                moveTime = 0.0f;
-            }
         }
 
-        //前回の状態と違ったら速度をリセットする
-        if (prevState != currentState)
+        //前回の状態がSTOPでないかつ、前回の状態と違ったら速度をリセットする
+        if (prevState != currentState　&& prevState != State.STOP)
         {
             moveTime = 0f;
         }
         else
         {
             //同じボタンを押し続けていれば、moveTimeが加算される
+            //ただし３秒を超えない
             moveTime += Time.deltaTime;
+
+            if(moveTime > 3.0f)
+            {
+                moveTime = 3.0f;
+            }
         }
 
         //アニメーションカーブに基づいてAddForce
@@ -306,100 +309,184 @@ public abstract class Frisbee : MonoBehaviour
         //各方向移動
         switch (currentState)
         {
+            //上キー
             case State.UP:
+                //下方向に速度があった場合、上方向に加える力を増加させる
                 if (rb.velocity.y < 0)
                 {
                     reverseForce = brake;
                 }
                 else
                 {
+                    //無かったら増加させない
                     reverseForce = 1;
                 }
                 rb.AddForce(Vector3.up * baseSpeed * speed * reverseForce);
                 break;
 
+                //下キー
             case State.DOWN:
+                //上方向に速度があった場合、下方向に加える力を増加させる
                 if (rb.velocity.y > 0)
                 {
                     reverseForce = brake;
                 }
                 else
                 {
+                    //無かったら増加させない
                     reverseForce = 1;
                 }
                 rb.AddForce(Vector3.down * baseSpeed * speed * reverseForce);
                 break;
 
             case State.LEFT:
+                //右方向に速度があった場合、左方向に加える力を増加させる
                 if (rb.velocity.x > 0)
                 {
                     reverseForce = brake;
                 }
                 else
                 {
+                    //無かったら増加させない
                     reverseForce = 1;
                 }
                 rb.AddForce(Vector3.left * baseSpeed * speed * reverseForce);
                 break;
 
             case State.RIGHT:
+                //左方向に速度があった場合、右方向に加える力を増加させる
                 if (rb.velocity.x < 0)
                 {
                     reverseForce = brake;
                 }
                 else
                 {
+                    //無かったら増加させない
                     reverseForce = 1;
                 }
                 rb.AddForce(Vector3.right * baseSpeed * speed * reverseForce);
                 break;
 
             case State.RIGHTUP:
+                //左下方向に速度があった場合、右上方向に加える力を増加させる
                 if (rb.velocity.x < 0 && rb.velocity.y < 0)
                 {
                     reverseForce = brake;
                 }
                 else
                 {
-                    reverseForce = 0.7f;
+                    //無かったら増加させない
+                    reverseForce = 1;
                 }
                 rb.AddForce(baseSpeed * speed * reverseForce, baseSpeed * speed * reverseForce, 0);
                 break;
 
             case State.LEFTUP:
+                //右下方向に速度があった場合、左上方向に加える力を増加させる
                 if (rb.velocity.x > 0 && rb.velocity.y < 0)
                 {
                     reverseForce = brake;
                 }
                 else
                 {
-                    reverseForce = 0.7f;
+                    //無かったら増加させない
+                    reverseForce = 1;
                 }
                 rb.AddForce(-baseSpeed * speed * reverseForce, baseSpeed * speed * reverseForce, 0);
                 break;
 
             case State.RIGHTDOWN:
+                //左上方向に速度があった場合、右下方向に加える力を増加させる
                 if (rb.velocity.x < 0 && rb.velocity.y > 0)
                 {
                     reverseForce = brake;
                 }
                 else
                 {
-                    reverseForce = 0.7f;
+                    //無かったら増加させない
+                    reverseForce = 1;
                 }
                 rb.AddForce(baseSpeed * speed * reverseForce, -baseSpeed * speed * reverseForce, 0);
                 break;
 
             case State.LEFTDOWN:
+                //右上方向に速度があった場合、左下方向に加える力を増加させる
                 if (rb.velocity.x > 0 && rb.velocity.y > 0)
                 {
                     reverseForce = baseSpeed;
                 }
                 else
                 {
-                    reverseForce = 0.7f;
+                    //無かったら増加させない
+                    reverseForce = 1;
                 }
                 rb.AddForce(-baseSpeed * speed * reverseForce, -baseSpeed * speed * reverseForce, 0);
+                break;
+
+            case State.STOP:
+                //無入力時、入力時間を減衰させる
+                //直前の入力と同じ移動キーを入力した場合、加速度が高い状態から再開される
+                moveTime -= Time.deltaTime;
+
+                if (moveTime < 0)
+                {
+                    moveTime = 0.0f;
+                }
+
+                //放置時、徐々に減速させる
+
+                //右上に速度があるときは左下に
+                if (rb.velocity.x > deceleration && rb.velocity.y > deceleration)
+                {
+                    rb.AddForce(-decelerationMutply, -decelerationMutply, 0);
+                }
+
+                //右下に速度ある時は、左上に
+                else if (rb.velocity.x > deceleration && rb.velocity.y < -deceleration)
+                {
+                    rb.AddForce(-decelerationMutply, decelerationMutply, 0);
+                }
+
+                //左上に速度があるときは、右下に
+                else if (rb.velocity.x < -deceleration && rb.velocity.y > deceleration)
+                {
+                    rb.AddForce(decelerationMutply, -decelerationMutply, 0);
+                }
+
+                //左下に速度があるときは、右上に
+                else if (rb.velocity.x < -deceleration && rb.velocity.y < -deceleration)
+                {
+                    rb.AddForce(decelerationMutply, decelerationMutply, 0);
+                }
+
+                //右に速度があるときは、左に
+                else if (rb.velocity.x > deceleration)
+                {
+                    rb.AddForce(Vector3.left * decelerationMutply);
+                }
+
+                //左に速度があるときは右に
+                else if (rb.velocity.x < -deceleration)
+                {
+                    rb.AddForce(Vector3.right * decelerationMutply);
+                }
+
+                //下に速度があるときは上に
+                else if (rb.velocity.y > deceleration)
+                {
+                    rb.AddForce(Vector3.down * decelerationMutply);
+                }
+
+                //上に速度があるときは、下に
+                else if (rb.velocity.y < -deceleration)
+                {
+                    rb.AddForce(Vector3.up * decelerationMutply);
+                }
+                else
+                {
+                    Debug.Log("停止中");
+                    rb.velocity = new Vector3(rb.velocity.x, rb.velocity.y, zSpeed);
+                }
                 break;
         }
 

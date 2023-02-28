@@ -6,7 +6,8 @@ public class Test : MonoBehaviour
 {
     public float speed;
     public float breakForce;
-    public float decelation;
+    public float deceleration;
+    public float decelerationMutply;
     private bool right;
     private bool left;
     private bool up;
@@ -155,24 +156,42 @@ public class Test : MonoBehaviour
                 timer = 0.0f;
             }
 
-            if (rb.velocity.x > decelation)
+            if (rb.velocity.x > deceleration && rb.velocity.y > deceleration)
             {
-                rb.AddForce(Vector3.left * decelation);
+                rb.AddForce(-decelerationMutply, -decelerationMutply, 0);
             }
-            else if (rb.velocity.x < -decelation)
+            else if (rb.velocity.x > deceleration && rb.velocity.y < -deceleration)
             {
-                rb.AddForce(Vector3.right * decelation);
+                rb.AddForce(-decelerationMutply, decelerationMutply, 0);
             }
-            else if (rb.velocity.y > decelation)
+            else if (rb.velocity.x < -deceleration && rb.velocity.y > deceleration)
             {
-                rb.AddForce(Vector3.down * decelation);
+                rb.AddForce(decelerationMutply, -decelerationMutply, 0);
             }
-            else if (rb.velocity.y < -decelation)
+            else if (rb.velocity.x < -deceleration && rb.velocity.y < -deceleration)
             {
-                rb.AddForce(Vector3.up * decelation);
+                rb.AddForce(decelerationMutply, decelerationMutply, 0);
+            }
+
+            else if (rb.velocity.x > deceleration)
+            {
+                rb.AddForce(Vector3.left * decelerationMutply);
+            }
+            else if (rb.velocity.x < -deceleration)
+            {
+                rb.AddForce(Vector3.right * decelerationMutply);
+            }
+            else if (rb.velocity.y > deceleration)
+            {
+                rb.AddForce(Vector3.down * decelerationMutply);
+            }
+            else if (rb.velocity.y < -deceleration)
+            {
+                rb.AddForce(Vector3.up * decelerationMutply);
             }
             else
             {
+                Debug.Log("’âŽ~’†");
                 rb.velocity = new Vector3(rb.velocity.x, rb.velocity.y, 0);
             }
         }

@@ -120,7 +120,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   speed: 10
   brake: 20
-  deceleration: 20
+  deceleration: 0.1
+  decelerationMutply: 40
   forceCurve:
     serializedVersion: 2
     m_Curve:
