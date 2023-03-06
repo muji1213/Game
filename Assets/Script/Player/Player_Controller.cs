@@ -215,7 +215,7 @@ public class Player_Controller : MonoBehaviour
         //投げた後はステージマネージャーのメソッドでプレイヤーの操作を無効にし、フリスビーだけ操作できるようにする
         stageManager.StopPlayerControll();
 
-        //
+        //投げた瞬間Unityちゃんは非表示に
         this.gameObject.SetActive(false);
     }
 
@@ -246,9 +246,16 @@ public class Player_Controller : MonoBehaviour
 
             //障害物に衝突した場合
             case 1:
+                //速度をリセット
                 rb.velocity = Vector3.zero;
+
+                //重力を有効にする
                 rb.useGravity = true;
+
+                //障害物から自分にかけてのベクトル(direction)に力を加える
                 rb.AddForce(direciton, ForceMode.Impulse);
+
+                //SE
                 SEManager.seManager.PlaySE(damageSEVol, damageSE);
                 break;
         }

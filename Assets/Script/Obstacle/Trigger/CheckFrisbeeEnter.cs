@@ -11,10 +11,12 @@ public class CheckFrisbeeEnter : MonoBehaviour
         return isOn;
     }
 
+    //フリスビーが侵入したら
     private void OnTriggerEnter(Collider other)
     {
         if (other.CompareTag("Frisbee") || other.CompareTag("Player"))
         {
+            //振動させる
             GameObject.Find("Main Camera").GetComponent<CameraFollower>().Shake(0.2f, 0.3f);
             isOn = true;
         }

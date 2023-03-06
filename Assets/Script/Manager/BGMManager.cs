@@ -6,6 +6,7 @@ public class BGMManager : MonoBehaviour
 
     AudioSource bgmAudioSource;
    
+    //ˆê‚Â‚µ‚©‘¶İ‚µ‚È‚¢‚æ‚¤‚É‚·‚é
     void Awake()
     {
         bgmAudioSource = GetComponent<AudioSource>();
@@ -37,11 +38,14 @@ public class BGMManager : MonoBehaviour
     //BGM‚ğ—¬‚·
     public void PlayBgm(AudioClip clip)
     {
+        //ƒNƒŠƒbƒv‚ğˆø”‚Éó‚¯æ‚é
         bgmAudioSource.clip = clip;
         if (clip == null)
         {
             return;
         }
+
+        //Ä¶‚·‚é
         bgmAudioSource.Play();
     }
 }

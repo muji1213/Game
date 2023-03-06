@@ -31,7 +31,11 @@ public class StageEnterCamera : MonoBehaviour
         {
             //入場済みならすぐに開始する
             dollyCart.m_Position = 0;
+
+            //パスも設定しない
             dollyCart.m_Path = null;
+
+            //終了判定にする
             isFinished = true;
         }
         else
@@ -49,8 +53,7 @@ public class StageEnterCamera : MonoBehaviour
             return;
         }
 
-
-        //パスの一定割合まで進んだら切り上げる
+        //パスの一定割合まで進んだら切り上げる(Lerpは0にならない)
         if (dollyCart.m_Position <= per)
         {
             dollyCart.m_Path = null;

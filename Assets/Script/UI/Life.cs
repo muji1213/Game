@@ -42,10 +42,13 @@ public class Life : MonoBehaviour
     public void DestroyLife()
     {
         currentLife -= 1;
+
+        //0未満にならない
         if (currentLife < 0)
         {
             return;
         }
+        //0以上なら、ハートを一つ消す
         else
         {
             Destroy(lifePanel.transform.GetChild(currentLife).gameObject);

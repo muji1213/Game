@@ -30,6 +30,7 @@ public class EvaluateUI : MonoBehaviour
     //最大３
     public void Evaluate(int type)
     {
+        //フリスビーを投げた時のHPで評価が変わる
         switch (type)
         {
             case 1:

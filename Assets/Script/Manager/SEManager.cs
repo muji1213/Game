@@ -10,6 +10,7 @@ public class SEManager : MonoBehaviour
     //音量
     public float seVol;
 
+    //ゲーム内に一つしか存在しない
     void Start()
     {
         seAudioSource = GetComponent<AudioSource>();
@@ -40,7 +41,7 @@ public class SEManager : MonoBehaviour
 
 
     //SEの再生
-    //引数で受け取ったボリューム(0 ~ 256)にタイトルで設定したSEのボリュームの割合(0 ~ 1)をかけて再生する
+    //引数で受け取ったボリューム(0 ~ 1)にタイトルで設定したSEのボリュームの割合(0 ~ 1)をかけて再生する
     public void PlaySE(float volume, AudioClip clip)
     {
         seAudioSource.volume = volume;

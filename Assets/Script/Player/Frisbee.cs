@@ -285,8 +285,8 @@ public abstract class Frisbee : MonoBehaviour
             currentState = State.STOP;
         }
 
-        //前回の状態がSTOPでないかつ、前回の状態と違ったら速度をリセットする
-        if (prevState != currentState　&& prevState != State.STOP)
+        //前回の状態がSTOPでないかつ、前回の状態と違ったら加速度をリセットする
+        if (prevState != currentState && prevState != State.STOP)
         {
             moveTime = 0f;
         }
@@ -296,7 +296,7 @@ public abstract class Frisbee : MonoBehaviour
             //ただし３秒を超えない
             moveTime += Time.deltaTime;
 
-            if(moveTime > 3.0f)
+            if (moveTime > 3.0f)
             {
                 moveTime = 3.0f;
             }
@@ -324,7 +324,7 @@ public abstract class Frisbee : MonoBehaviour
                 rb.AddForce(Vector3.up * baseSpeed * speed * reverseForce);
                 break;
 
-                //下キー
+            //下キー
             case State.DOWN:
                 //上方向に速度があった場合、下方向に加える力を増加させる
                 if (rb.velocity.y > 0)
@@ -505,7 +505,7 @@ public abstract class Frisbee : MonoBehaviour
             this.transform.Rotate(rotateSpeed * Time.deltaTime, 0, 0);
         }
 
-        //Lキーで左回転
+        //Wキーで左回転
         if (rotateLKey)
         {
             this.transform.Rotate(-rotateSpeed * Time.deltaTime, 0, 0);
@@ -584,6 +584,7 @@ public abstract class Frisbee : MonoBehaviour
 
         switch (type)
         {
+            //フリスビーが墜落した場合、ストップ演出が入る
             case 0:
                 Time.timeScale = 0.0f;
 
@@ -593,6 +594,7 @@ public abstract class Frisbee : MonoBehaviour
 
                 break;
 
+            //フリスビーが死亡判定に接触した場合、なにもしない
             case 1:
                 break;
         }
@@ -605,6 +607,7 @@ public abstract class Frisbee : MonoBehaviour
 
         isRetryed = true;
 
+        //一定時間後にゲーム時間を停止させる
         yield return new WaitForSeconds(2);
 
         this.gameObject.SetActive(false);
@@ -654,7 +657,11 @@ public abstract class Frisbee : MonoBehaviour
     public void ReduceLife()
     {
         SEManager.seManager.PlaySE(damageSEVol, damageSE);
+
+        //HPを減らす
         HP -= 1;
+
+        //UIのハートも減らす
         stageManager.ReduceHPUI();
     }
 
@@ -679,6 +686,7 @@ public abstract class Frisbee : MonoBehaviour
         coinEffect.Play();
     }
 
+    //ダメージを受けた際にエフェクトを再生する
     public void PlayDamageEffect(Vector3 pos)
     {
         GameObject damageEffect = Instantiate(this.damageEffect, pos, Quaternion.identity);

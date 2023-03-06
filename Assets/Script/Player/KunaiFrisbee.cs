@@ -76,7 +76,6 @@ public class KunaiFrisbee : Frisbee
 
         yield return new WaitForSeconds(time);
 
-
         //ˆê’èŽžŠÔ“§–¾“x‚ðŒã–ß‚·
         this.gameObject.GetComponent<MeshRenderer>().material.color = new Color(color.a, color.g, color.b, 1.0f);
 

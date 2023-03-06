@@ -11,10 +11,12 @@ public class BossTrigger : MonoBehaviour
         return isOn;
     }
 
+    //フリスビーが侵入したら
     private void OnTriggerEnter(Collider other)
     {
         if (other.CompareTag("Frisbee"))
         {
+            //ボスを出現させ、UIを出す
             boss.SetActive(true);
             bossEncountUI.SetActive(true);
             isOn = true;

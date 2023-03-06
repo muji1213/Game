@@ -24,6 +24,7 @@ public abstract class Bullet : MonoBehaviour
         }
     }
 
+    //宇宙船のスクリプト
     public Enemy_AirShip AirShip
     {
         set
@@ -32,6 +33,7 @@ public abstract class Bullet : MonoBehaviour
         }
     }
 
+    //消滅時間
     public float DestroyTime
     {
         set

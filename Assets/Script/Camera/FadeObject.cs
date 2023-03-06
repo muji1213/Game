@@ -21,6 +21,7 @@ public class FadeObject : MonoBehaviour
         //dが完全に透過する距離以下ならアルファを０に
         if (d <= hiddenDisanta)
         {
+            //メッシュレンダラーのアルファを下げる
             meshRenderer.material.SetFloat("_Alpha", 0.0f);
         }
 
@@ -28,11 +29,14 @@ public class FadeObject : MonoBehaviour
         else if (d <= startDistance)
         {
             float c = (d - hiddenDisanta) / (startDistance - hiddenDisanta);
+
+            //メッシュレンダラーのアルファを下げる
             meshRenderer.material.SetFloat("_Alpha", c);
         }
         //dがstartDistance以上ならアルファを１に
         else
         {
+            //メッシュレンダラーのアルファを下げる
             meshRenderer.material.SetFloat("_Alpha", 1.0f);
         }
     }

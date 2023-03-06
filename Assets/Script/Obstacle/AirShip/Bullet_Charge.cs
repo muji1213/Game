@@ -45,12 +45,12 @@ public class Bullet_Charge : Bullet
             //‚½‚ß’†‚Í“–‚½‚è”»’è‚Í–³‚µ
             hitBox.enabled = false;
             leser.Stop();
-
         }
 
         timer += Time.deltaTime;
     }
 
+    //—\‘ªü‚Ì•\¦‚©‚çUŒ‚”»’è‚ªo‚é‚Ü‚Å‚ÌŠÔ
     public float AttackDelay
     {
         set

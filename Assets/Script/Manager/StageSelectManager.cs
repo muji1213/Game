@@ -59,11 +59,11 @@ public class StageSelectManager : SceneChanger
 
             //ステージ0
             string stage0 = "山にカコまれているクンレンジョウ。カケダシのフリスビストはココでレンシュウだ！";
-            stages.Add(0, new Stage(0, "クンレンジョウ", stage0, Resources.Load<Sprite>("Stage0_Image"), false, true));
+            stages.Add(0, new Stage(0, "クンレンジョウ", stage0, Resources.Load<Sprite>("Stage0_Image"), false, false));
 
             //ステージ1
             string stage1 = "カゼがあれくるうキョウコク。イワがむきだしで、アルくだけでもせいいっぱい";
-            stages.Add(1, new Stage(1, "ボウフウのキョウコク", stage1, Resources.Load<Sprite>("Stage1_Image"), false, true));
+            stages.Add(1, new Stage(1, "ボウフウのキョウコク", stage1, Resources.Load<Sprite>("Stage1_Image"), false, false));
 
             //ステージ2
             string stage2 = "ウチュウくうかん。いつもよりカラダがカルい！ブラックホールにチュウイだ！";

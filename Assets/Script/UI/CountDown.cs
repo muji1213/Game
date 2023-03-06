@@ -105,15 +105,17 @@ public class CountDown : MonoBehaviour
             currentSprite = numberImage.sprite;
         }
 
-        //スプライトの更新があった場合
+        //スプライトの更新があった場合、アニメーション再生
         if (preSprite != currentSprite)
         {
             if (currentSprite != go)
             {
+                //GoならGo用のSE
                 SEManager.seManager.PlaySE(SEVol, countdownSE);
             }
             else
             {
+                //それ以外なら、１２３用のSE
                 SEManager.seManager.PlaySE(SEVol, goSE);
             }
             //アニメーションを再生する
