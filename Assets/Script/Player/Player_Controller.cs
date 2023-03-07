@@ -97,6 +97,9 @@ public class Player_Controller : MonoBehaviour, IMovable, IDienable, PlayerUnit
 
         switch (currentState)
         {
+            case State.Dead:
+                break;
+
             //初期状態のとき、Runに遷移する
             case State.Idle:
                 currentState = State.Run;
@@ -124,10 +127,7 @@ public class Player_Controller : MonoBehaviour, IMovable, IDienable, PlayerUnit
                 break;
 
             case State.Shoot:
-                break;
-
-            case State.Dead:
-                break;
+                break;     
         }
 
         //Pキーでポーズ
@@ -339,7 +339,8 @@ public class Player_Controller : MonoBehaviour, IMovable, IDienable, PlayerUnit
 
     /// <summary>
     /// アニメーション遷移用のメソッド
-    /// 各種boolで遷移させている
+    /// currentStateがRunの状態で呼び出しをSetAnimation(true)にすると、アニメーターのパラメータRunが
+    /// trueになる
     /// </summary>
     public void SetAnimation(bool judge)
     {
