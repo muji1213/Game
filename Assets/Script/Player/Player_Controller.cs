@@ -5,9 +5,18 @@ using UnityEngine;
 //このスクリプトはフリスビーを投げる前のプレイヤーのスクリプトです
 public class Player_Controller : MonoBehaviour, IMovable, IDienable, PlayerUnit
 {
+    public enum State
+    {
+        Idle,
+        Run,
+        Jump,
+        Shoot,
+        Dead
+    }
+
     //変数
-    [Header("奥移動速度")] [SerializeField] float zSpeed;
-    [Header("横移動速度")] [SerializeField] float xSpeed;
+    [Header("奥移動速度")] [SerializeField] float zMoveSpeed;
+    [Header("横移動速度")] [SerializeField] float xMoveSpeed;
     [Header("ジャンプ高度")] [SerializeField] float jumpSpeed;
     [Header("重力")] [SerializeField] float gravity;
     [Header("フリスビー")] [SerializeField] GameObject frisbee;
@@ -24,6 +33,9 @@ public class Player_Controller : MonoBehaviour, IMovable, IDienable, PlayerUnit
     [Header("ライフアップエフェクト")] [SerializeField] ParticleSystem lifeUPEffect;
     [Header("どれくらい走れば最大HPになるか")] [SerializeField] public int MaxHPTime;
 
+    //X速度
+    private float xSpeed;
+
     //走った時間を計測
     //走った時間が長いほどフリスビーのライフが増える
     //これはStageManagerで参照される
@@ -31,6 +43,9 @@ public class Player_Controller : MonoBehaviour, IMovable, IDienable, PlayerUnit
 
     //障害物に衝突時吹っ飛ぶ方向
     Vector3 dieBlowDirection;
+
+    //ステート
+    State currentState;
 
     //各種キー
     private bool rightKey; //右移動
@@ -41,9 +56,6 @@ public class Player_Controller : MonoBehaviour, IMovable, IDienable, PlayerUnit
 
     //各種判定
     private bool isGround = false; //接地判定
-    private bool isRun = false; //走っているかどうか
-    private bool isJump = false; //ジャンプ中かどうか
-    private bool isShoot = false; //フリスビーを投げたかどうか
     private bool isLifeUP = false;
 
     //インスタンス
@@ -55,7 +67,7 @@ public class Player_Controller : MonoBehaviour, IMovable, IDienable, PlayerUnit
     void Start()
     {
         //コンポーネント取得
-       
+
         //ステージマネージャー
         stageManager = GameObject.Find("StageManager").GetComponent<StageManager>();
 
@@ -67,6 +79,8 @@ public class Player_Controller : MonoBehaviour, IMovable, IDienable, PlayerUnit
 
         //アニメーター
         anim = GetComponent<Animator>();
+
+        currentState = State.Idle;
     }
 
     // Update is called once per frame
@@ -79,12 +93,41 @@ public class Player_Controller : MonoBehaviour, IMovable, IDienable, PlayerUnit
         shootKey = Input.GetKeyDown(KeyCode.F);
         poseKey = Input.GetKeyDown(KeyCode.P);
 
-        Jump();
+        Debug.Log(currentState + "です");
 
-        //Fキーでフリスビーを投げる
-        if (shootKey)
+        switch (currentState)
         {
-            Shoot();
+            //初期状態のとき、Runに遷移する
+            case State.Idle:
+                currentState = State.Run;
+                break;
+
+            //Run状態の時
+            case State.Run:
+                Move();
+
+                //ジャンプキーが押されたらジャンプ
+                if (jumpKey)
+                {
+                    Jump();
+                }
+                //シュートキーが押されたらシュート
+                else if (shootKey)
+                {
+                    Shoot();
+                }
+                break;
+
+                //ジャンプ中は落下メソッド
+            case State.Jump:
+                JumpDown();
+                break;
+
+            case State.Shoot:
+                break;
+
+            case State.Dead:
+                break;
         }
 
         //Pキーでポーズ
@@ -93,31 +136,27 @@ public class Player_Controller : MonoBehaviour, IMovable, IDienable, PlayerUnit
         {
             stageManager.Pose();
         }
+
+        //走った時間を計測
+        runTime += Time.deltaTime;
+
+        //走った時間に応じてアニメーションカーブの値を奥移動速度に適用する（走った時間が長いほど速度が上がる）
+        zMoveSpeed = runCurve.Evaluate(runTime);
+
+        rb.velocity = new Vector3(xSpeed, rb.velocity.y, zMoveSpeed);
     }
 
     private void FixedUpdate()
     {
-
         //接地判定をGroundCheckerのメソッドから取得
         isGround = groundChecker.CheckGround();
 
         //下方向に重力をかける
         Gravity();
 
-        //アニメーションの遷移をする
-        SetAnimation();
-
-        if (!player_HurtBox.isDeadCheck())
+        if (player_HurtBox.isDeadCheck())
         {
-            //フリスビーを投げていなければ移動を続ける
-            if (!isShoot)
-            {
-                Move();
-            }
-            else
-            {
-                return;
-            }
+            currentState = State.Dead;
         }
     }
 
@@ -130,32 +169,29 @@ public class Player_Controller : MonoBehaviour, IMovable, IDienable, PlayerUnit
     /// </summary>
     public void Move()
     {
-        //走った時間を計測
-        runTime += Time.deltaTime;
+        //ステートを変更
+        currentState = State.Run;
 
-        //走った時間に応じてアニメーションカーブの値を奥移動速度に適用する（走った時間が長いほど速度が上がる）
-        zSpeed = runCurve.Evaluate(runTime);
+        //アニメーターのブールを変更
+        SetAnimation(true);
 
-        //接地しているときにしか横移動できない
         if (isGround)
         {
-            isRun = true;
-
             //右キーで右へ
             if (rightKey)
             {
-                rb.velocity = new Vector3(xSpeed, rb.velocity.y, zSpeed);
+                xSpeed = xMoveSpeed;
             }
 
             //左キーで左へ
             else if (leftKey)
             {
-                rb.velocity = new Vector3(-xSpeed, rb.velocity.y, zSpeed);
+                xSpeed = -xMoveSpeed;
             }
             //入力無しは左右移動しない
             else
             {
-                rb.velocity = new Vector3(0, rb.velocity.y, zSpeed);
+                xSpeed = 0.0f;
             }
         }
     }
@@ -168,19 +204,34 @@ public class Player_Controller : MonoBehaviour, IMovable, IDienable, PlayerUnit
     public void Jump()
     {
         //接地しているかつジャンプキーが押された
-        if (jumpKey && isGround)
+        if (isGround)
         {
-            //ジャンプフラグをTrueに
-            isJump = true;
+            //ステートを変更
+            currentState = State.Jump;
+
+            //アニメーターのブールを変更
+            SetAnimation(true);
 
             //上方向へ力を加える
             rb.AddForce(transform.up * jumpSpeed);
         }
+    }
 
-        //ジャンプフラグがTrueかつ速度が一定以下になったらジャンプをfalseに
-        if (rb.velocity.y < -5.0f && isJump)
+    public void JumpDown()
+    {
+        if (!isGround)
         {
-            isJump = false;
+            //ジャンプフラグがTrueかつ速度が一定以下になったらジャンプをfalseに
+            if (rb.velocity.y < -1.0f && currentState == State.Jump)
+            {
+                Debug.Log("ジャンプ解除");
+
+                //アニメーターのブールを変更
+                SetAnimation(false);
+
+                //ステートを変更
+                currentState = State.Run;
+            }
         }
     }
 
@@ -196,6 +247,9 @@ public class Player_Controller : MonoBehaviour, IMovable, IDienable, PlayerUnit
             return;
         }
 
+        //ステートを変更
+        currentState = State.Shoot;
+
         int frisbeeHP = CaluculateFrisbeeHP((int)runTime);
 
         //UIを表示
@@ -206,9 +260,6 @@ public class Player_Controller : MonoBehaviour, IMovable, IDienable, PlayerUnit
         //フリスビーを生成
         GameObject threwfrisbee = Instantiate(StageSelectManager.selectedFrisbee.SelectedFrisbee, new Vector3(transform.position.x, this.transform.position.y, this.transform.position.z + 2), Quaternion.Euler(new Vector3(90, 90, 0)));
         threwfrisbee.GetComponent<Frisbee>().SetHP(frisbeeHP);
-
-        //フリスビーの投げたフラグをTrueに
-        isShoot = true;
 
         //投げた時点でプレイヤーを停止させる
         rb.velocity = Vector3.zero;
@@ -224,6 +275,7 @@ public class Player_Controller : MonoBehaviour, IMovable, IDienable, PlayerUnit
     public void TheDie(int type, Vector3 direction)
     {
         dieBlowDirection = direction;
+        currentState = State.Dead;
         StartCoroutine(Die(type));
     }
 
@@ -289,19 +341,24 @@ public class Player_Controller : MonoBehaviour, IMovable, IDienable, PlayerUnit
     /// アニメーション遷移用のメソッド
     /// 各種boolで遷移させている
     /// </summary>
-    public void SetAnimation()
+    public void SetAnimation(bool judge)
     {
-        //走っているとき
-        anim.SetBool("Run", isRun);
+        switch (currentState)
+        {
+            case State.Run:
+                anim.SetBool("Run", judge);
+                break;
+
+            case State.Jump:
+                anim.SetBool("Jump", judge);
+                break;
+        }
 
         //接地しているとき
         anim.SetBool("Ground", isGround);
 
-        //ジャンプしているとき
-        anim.SetBool("Jump", isJump);
-
         //走った時間が長いほど、アニメーションが加速する
-        anim.SetFloat("Speed", zSpeed / 6);
+        anim.SetFloat("Speed", zMoveSpeed / 6);
     }
 
     /// <summary>

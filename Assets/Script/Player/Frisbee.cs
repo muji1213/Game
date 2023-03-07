@@ -15,7 +15,8 @@ public abstract class Frisbee : MonoBehaviour, IMovable, IRoatatable, FrisbeeUni
         LEFTUP,
         RIGHTDOWN,
         LEFTDOWN,
-        STOP
+        STOP,
+        Dead
     }
 
     [Header("c‰¡ˆÚ“®‘¬“x")] [SerializeField] float speed; //c‰¡ˆÚ“®‘¬“x

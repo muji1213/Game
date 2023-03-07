@@ -122,8 +122,6 @@ public class Frisbee_HurtBox : MonoBehaviour
             isDead = false;
         }
 
-        
-
         //フリスビーがターゲット（ゴール）と衝突した場合
         if (collision.gameObject.tag == targetTag)
         {

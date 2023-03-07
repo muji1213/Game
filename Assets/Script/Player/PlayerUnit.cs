@@ -6,13 +6,13 @@ public interface PlayerUnit
 {
     public void Jump();
 
+    public void JumpDown();
+
     public void Shoot();
 
     public void Gravity();
 
-    public void SetAnimation();
-
-    public void PlayDieAnim(int type);
+    public void SetAnimation(bool boolean);
 
     public void PlayCoinEffect();
 
