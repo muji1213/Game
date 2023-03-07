@@ -3174,6 +3174,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8121ba54a230aa244b57695ef0ec6e7d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  inputSEVol: 1
+  cancelSEVol: 1
   eventSystem: {fileID: 208978203}
   startSelectUI: {fileID: 1907677923}
   startButton: {fileID: 322930767224097812}
@@ -3190,7 +3192,9 @@ MonoBehaviour:
   goStageButton: {fileID: 1262684433}
   bgm: {fileID: 8300000, guid: 26423534c3e42f847a9d95525da6ee46, type: 3}
   inputSE: {fileID: 8300000, guid: 060a19e7b1c4c7b4ca429429be3aae93, type: 3}
+  inputSEVol: 1
   cancelSE: {fileID: 8300000, guid: 894bc78a4a83dbd4a814c3205ea56068, type: 3}
+  canselSEVol: 1
 --- !u!4 &1766469499
 Transform:
   m_ObjectHideFlags: 0
@@ -3667,6 +3671,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   SE: {fileID: 8300000, guid: 9f6070ded54caed4e8e9128d5a4569ab, type: 3}
+  SEVol: 1
 --- !u!1 &1907677923
 GameObject:
   m_ObjectHideFlags: 0

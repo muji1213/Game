@@ -2,5 +2,5 @@
 
 public interface IMovable
 {
-    public void Move();
+    public abstract void Move();
 }

@@ -1,7 +1,7 @@
 using UnityEngine;
 
 //障害物（木）のスクリプト
-public class Obstacle_Tree : Collisionable_Obstacle, IMovable
+public class Obstacle_Tree : Collisionable_Obstacle, IRoatatable
 {
     [Header("倒壊する速さ")] [SerializeField] private float rotateSpeed;
     [Header("倒壊する方向")] [SerializeField] private Vector3 rotateVec;
@@ -23,11 +23,11 @@ public class Obstacle_Tree : Collisionable_Obstacle, IMovable
             //消滅させないと回転し続けるため消す
             Destroy(this.gameObject, 7.0f);
         }
-        Move();
+        Rotate();
     }
 
     //フリスビーが特定の位置に接触したら
-    public void Move()
+    public void Rotate()
     {
         if (checkFrisbeeEnter.CheckEnterFrisbee())
         {

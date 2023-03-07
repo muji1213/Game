@@ -3,7 +3,7 @@ using UnityEngine;
 
 
 //このスクリプトはフリスビーを投げる前のプレイヤーのスクリプトです
-public class Player_Controller : MonoBehaviour
+public class Player_Controller : MonoBehaviour, IMovable, IDienable, PlayerUnit
 {
     //変数
     [Header("奥移動速度")] [SerializeField] float zSpeed;
@@ -29,6 +29,9 @@ public class Player_Controller : MonoBehaviour
     //これはStageManagerで参照される
     [HideInInspector] public float runTime = 0.0f;
 
+    //障害物に衝突時吹っ飛ぶ方向
+    Vector3 dieBlowDirection;
+
     //各種キー
     private bool rightKey; //右移動
     private bool leftKey; //左移動
@@ -48,13 +51,11 @@ public class Player_Controller : MonoBehaviour
     private Rigidbody rb;  //リジットボディ
     private Player_HurtBox player_HurtBox; //当たり判定
     private Animator anim; //アニメーター
-    private AudioSource audioSource;
 
     void Start()
     {
         //コンポーネント取得
-        audioSource = GetComponent<AudioSource>();
-
+       
         //ステージマネージャー
         stageManager = GameObject.Find("StageManager").GetComponent<StageManager>();
 
@@ -127,7 +128,7 @@ public class Player_Controller : MonoBehaviour
     /// 前方への移動速度はアニメーションカーブで設定。
     /// 走った時間もここで計測する
     /// </summary>
-    private void Move()
+    public void Move()
     {
         //走った時間を計測
         runTime += Time.deltaTime;
@@ -164,7 +165,7 @@ public class Player_Controller : MonoBehaviour
     /// Spaceキーでジャンプ
     /// ジャンプ中はフリスビーが投げられない
     /// </summary>
-    private void Jump()
+    public void Jump()
     {
         //接地しているかつジャンプキーが押された
         if (jumpKey && isGround)
@@ -187,7 +188,7 @@ public class Player_Controller : MonoBehaviour
     /// フリスビーを投げるメソッド
     /// ジャンプ中は投げられない
     /// </summary>
-    private void Shoot()
+    public void Shoot()
     {
         //接地中でないとき投げられない
         if (!isGround)
@@ -222,14 +223,15 @@ public class Player_Controller : MonoBehaviour
 
     public void TheDie(int type, Vector3 direction)
     {
-        StartCoroutine(Die(type, direction));
+        dieBlowDirection = direction;
+        StartCoroutine(Die(type));
     }
 
     /// <summary>
     /// プレイヤーが障害物、もしくは穴に落ちた際に呼ぶメソッド
     /// </summary>
     /// <returns></returns>
-    private IEnumerator Die(int type, Vector3 direciton)
+    public IEnumerator Die(int type)
     {
         //死亡位置を記録
         stageManager.deadPos = this.transform.position.z;
@@ -253,7 +255,7 @@ public class Player_Controller : MonoBehaviour
                 rb.useGravity = true;
 
                 //障害物から自分にかけてのベクトル(direction)に力を加える
-                rb.AddForce(direciton, ForceMode.Impulse);
+                rb.AddForce(dieBlowDirection, ForceMode.Impulse);
 
                 //SE
                 SEManager.seManager.PlaySE(damageSEVol, damageSE);
@@ -278,7 +280,7 @@ public class Player_Controller : MonoBehaviour
     /// 常に下方向に重量をかける
     /// ステージによって変更できるようにする
     /// </summary>
-    private void Gravity()
+    public void Gravity()
     {
         rb.AddForce(new Vector3(0, -gravity, 0), ForceMode.Acceleration);
     }
@@ -287,7 +289,7 @@ public class Player_Controller : MonoBehaviour
     /// アニメーション遷移用のメソッド
     /// 各種boolで遷移させている
     /// </summary>
-    private void SetAnimation()
+    public void SetAnimation()
     {
         //走っているとき
         anim.SetBool("Run", isRun);
@@ -353,7 +355,7 @@ public class Player_Controller : MonoBehaviour
     /// <param name="runTime"></param>
     /// <returns></returns>
 
-    private int CaluculateFrisbeeHP(int runTime)
+    public int CaluculateFrisbeeHP(int runTime)
     {
         //ライフアップを取得したなら１追加
         var extraHP = 0;

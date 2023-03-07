@@ -1,7 +1,7 @@
 using UnityEngine;
 using System.Collections;
 
-public abstract class Frisbee : MonoBehaviour
+public abstract class Frisbee : MonoBehaviour, IMovable, IRoatatable, FrisbeeUnit, IDienable
 {
     //フリスビーの移動状態
     //例えば上キーを押した場合UPになる
@@ -565,7 +565,7 @@ public abstract class Frisbee : MonoBehaviour
     /// <summary>
     /// 死亡時に呼び出す
     /// </summary>
-    private IEnumerator Die(int type)
+    public IEnumerator Die(int type)
     {
         if (isRetryed)
         {

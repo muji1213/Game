@@ -2,9 +2,14 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class CheckFrisbeeEnter : MonoBehaviour
+public class CheckFrisbeeEnter : Trigger
 {
     private bool isOn = false;
+
+    private void Start()
+    {
+        targetTag = "Frisbee";
+    }
 
     public bool CheckEnterFrisbee()
     {
@@ -12,13 +17,11 @@ public class CheckFrisbeeEnter : MonoBehaviour
     }
 
     //ƒtƒŠƒXƒr[‚ªN“ü‚µ‚½‚ç
-    private void OnTriggerEnter(Collider other)
+   
+    protected override void ActiveEvent()
     {
-        if (other.CompareTag("Frisbee") || other.CompareTag("Player"))
-        {
-            //U“®‚³‚¹‚é
-            GameObject.Find("Main Camera").GetComponent<CameraFollower>().Shake(0.2f, 0.3f);
-            isOn = true;
-        }
+        //U“®‚³‚¹‚é
+        GameObject.Find("Main Camera").GetComponent<CameraFollower>().Shake(0.2f, 0.3f);
+        isOn = true;
     }
 }

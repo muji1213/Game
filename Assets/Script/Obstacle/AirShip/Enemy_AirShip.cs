@@ -1,7 +1,7 @@
 using UnityEngine;
 using Cinemachine;
 
-public class Enemy_AirShip : MonoBehaviour
+public class Enemy_AirShip : MonoBehaviour, IMovable
 {
     [HideInInspector]
     public enum State
@@ -151,44 +151,7 @@ public class Enemy_AirShip : MonoBehaviour
         SetAnim();
         SetUIAnim();
 
-        //フリスビーを感知したら移動する
-        if (checkFrisbee.CheckEnterFrisbee() && isStart == false)
-        {
-            flySource.Play();
-            dollyCart.m_Speed = startSpeed;
-        }
-
-        //スタート位置についたらパスを変更
-        if (dollyCart.m_Position == startPath.PathLength && Mathf.Abs(this.transform.position.z - GameObject.FindWithTag("Frisbee").transform.position.z) < 20f)
-        {
-            //フリスビーのリジットボディを取得
-            frisbeeRb = GameObject.FindWithTag("Frisbee").GetComponent<Rigidbody>();
-
-            //フラグをおろす
-            isStart = true;
-
-            //パスを変更
-            dollyCart.m_Path = movePath;
-
-            //パスの初期位置に移動する
-            dollyCart.m_Position = movePath.PathLength;
-
-            frisbee = GameObject.FindWithTag("Frisbee");
-        }
-
-        //終了位置についたら
-        if (dollyCart.m_Path == movePath && isEnd)
-        {
-            rockOnUI.SetActive(false);
-            dollyCart.m_Speed = -frisbeeRb.velocity.z;
-            state = State.Dead;
-        }
-
-        //パスの最終地点まで行ったら非アクティブに
-        if (dollyCart.m_Path == movePath && dollyCart.m_Position == 0)
-        {
-            this.gameObject.SetActive(false);
-        }
+        Move();
 
 
         if (isStart && !isEnd)
@@ -295,6 +258,49 @@ public class Enemy_AirShip : MonoBehaviour
                     break;
             }
         }
+    }
+
+    public void Move()
+    {
+        //フリスビーを感知したら移動する
+        if (checkFrisbee.CheckEnterFrisbee() && isStart == false)
+        {
+            flySource.Play();
+            dollyCart.m_Speed = startSpeed;
+        }
+
+        //スタート位置についたらパスを変更
+        if (dollyCart.m_Position == startPath.PathLength && Mathf.Abs(this.transform.position.z - GameObject.FindWithTag("Frisbee").transform.position.z) < 20f)
+        {
+            //フリスビーのリジットボディを取得
+            frisbeeRb = GameObject.FindWithTag("Frisbee").GetComponent<Rigidbody>();
+
+            //フラグをおろす
+            isStart = true;
+
+            //パスを変更
+            dollyCart.m_Path = movePath;
+
+            //パスの初期位置に移動する
+            dollyCart.m_Position = movePath.PathLength;
+
+            frisbee = GameObject.FindWithTag("Frisbee");
+        }
+
+        //終了位置についたら
+        if (dollyCart.m_Path == movePath && isEnd)
+        {
+            rockOnUI.SetActive(false);
+            dollyCart.m_Speed = -frisbeeRb.velocity.z;
+            state = State.Dead;
+        }
+
+        //パスの最終地点まで行ったら非アクティブに
+        if (dollyCart.m_Path == movePath && dollyCart.m_Position == 0)
+        {
+            this.gameObject.SetActive(false);
+        }
+
     }
 
     //ロックオン中、照準を表示する

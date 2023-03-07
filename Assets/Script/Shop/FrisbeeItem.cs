@@ -11,7 +11,10 @@ public class FrisbeeItem
     private GameObject Frisbee; //これに対応するフリスビーのプレハブ
     private bool isObtained;
 
-    [TextArea] [SerializeField] private string frisInfo; //フリスビーの説明文
+    //ステータス用のスクリプト
+    /*private Frisbee frisbee;*/
+
+    private string frisInfo; //フリスビーの説明文
 
     public FrisbeeItem(int level, int num, string frisname, int price, Sprite frisSprite, string frisInfo, GameObject Frisbee, bool isObtained)
     {

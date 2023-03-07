@@ -24,6 +24,9 @@ public class ItemManager : MonoBehaviour
 
             items = new Dictionary<int, FrisbeeItem>();
 
+            //本来は、FrisbeeItem Frisbees[]という配列を作り、items.Add(0,Frisbees[0])とする予定だったが、
+            //Unityのバグで配列[0]番目が設定できなかったため、このような実装にしている
+
             items.Add(0, new FrisbeeItem(0, 0, "NormalFrisbee", 0, Resources.Load<Sprite>("NormalFrisbeeSprite"),
                 "ビギナーむけのフリスビー、かるくてつかいやすい", Frisbees[0], true));
 

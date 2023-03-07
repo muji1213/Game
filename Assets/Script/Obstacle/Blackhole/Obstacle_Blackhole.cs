@@ -1,11 +1,8 @@
 using UnityEngine;
 
-public class Obstacle_Blackhole : UnCollisionable_Obstacle, IMovable
+public class Obstacle_Blackhole : UnCollisionable_Obstacle
 {
     [Header("ˆø‚«Šñ‚¹‚Ì‹­‚³")] [SerializeField] float force;
-    [Header("“®‚­‚©‚Ç‚¤‚©")] [SerializeField] bool isMove;
-    [Header("“®‚­•ûŒü")] [SerializeField] Vector3 moveDirection;
-    [Header("“®‚­‘¬‚³")] [SerializeField] float moveSpeed;
 
     private Rigidbody frisbeeRb;
 
@@ -19,17 +16,9 @@ public class Obstacle_Blackhole : UnCollisionable_Obstacle, IMovable
 
     private void FixedUpdate()
     {
-        //“®‚­İ’è‚ğ‚µ‚Ä‚é‚È‚ç
-        if (isMove)
-        {
-            Move();
-        }
+       
     }
 
-    public void Move()
-    {
-        this.transform.position += moveDirection * moveSpeed;
-    }
 
     private void OnTriggerStay(Collider other)
     {

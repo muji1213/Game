@@ -16,7 +16,6 @@ public class Target : MonoBehaviour
         rb = GetComponent<Rigidbody>();
     }
 
-
     private void FixedUpdate()
     {
       
