@@ -2,16 +2,13 @@ using UnityEngine;
 
 
 //ライフのUIのスクリプトです
-public class Life : MonoBehaviour
+public class LifeUI : MonoBehaviour
 {
     [Header("ライフのプレハブ")] [SerializeField] GameObject lifePrefab;
     [Header("パネル")] [SerializeField] GameObject lifePanel;
 
     //現在ライフ
     private int currentLife = 0;
-
-    //前のライフ
-    private int preLife;
 
     private void Awake()
     {

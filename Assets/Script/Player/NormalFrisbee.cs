@@ -4,9 +4,4 @@ using UnityEngine;
 
 public class NormalFrisbee : Frisbee
 {
-
-    protected override void Dodge()
-    {
-        return;
-    }
 }

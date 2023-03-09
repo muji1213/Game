@@ -27,7 +27,7 @@ public class StageEnterCamera : MonoBehaviour
         dollyCart = this.GetComponent<CinemachineDollyCart>();
 
         //初回入場済みか調べる
-        if (StageSelectManager.stageSelectManager.GetStageEnteredFlag(StageSelectManager.selectedStageNum))
+        if (StageSelectManager.I.isStageEntered(GameManager.I.SelectedStageInfo.StageNum))
         {
             //入場済みならすぐに開始する
             dollyCart.m_Position = 0;
@@ -62,7 +62,7 @@ public class StageEnterCamera : MonoBehaviour
             isFinished = true;
 
             //初回入場フラグをおろす
-            StageSelectManager.stageSelectManager.ActiveStageEnteredFlag(StageSelectManager.selectedStageNum);
+            StageSelectManager.I.ActiveStageEnteredFlag(GameManager.I.SelectedStageInfo.StageNum);
             return;
         }
         else if (dollyCart.m_Position <= path.PathLength)

@@ -2,10 +2,8 @@ using System.Collections.Generic;
 using UnityEngine;
 
 //購入したフリスビーを管理するスクリプト
-public class ItemManager : MonoBehaviour
+public class ItemManager : SingleTon<ItemManager>
 {
-    public static ItemManager itemManager = null;
-
     //アイテムのディクショナリー
     public static Dictionary<int, FrisbeeItem> items;
 
@@ -15,13 +13,11 @@ public class ItemManager : MonoBehaviour
     //初期化したかどうか
     static private bool isInitialized = false;
 
-    private void Awake()
+    protected override void Init()
     {
         //初期化
         if (!isInitialized)
         {
-            itemManager = this;
-
             items = new Dictionary<int, FrisbeeItem>();
 
             //本来は、FrisbeeItem Frisbees[]という配列を作り、items.Add(0,Frisbees[0])とする予定だったが、

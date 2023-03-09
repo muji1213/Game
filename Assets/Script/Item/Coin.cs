@@ -4,10 +4,7 @@ using UnityEngine;
 //このスクリプトはコインを取得した際のスクリプトで
 public class Coin : MonoBehaviour
 {
-    private int point = 200;//取得ポイント
-
-    // ステージマネージャー
-    private StageManager stageManager;
+    private int score = 200;//取得ポイント
 
     //フリスビーのタグ
     private string frisbeeTag = "Frisbee";
@@ -15,22 +12,22 @@ public class Coin : MonoBehaviour
     //プレイヤータグ
     private string playerTag = "Player";
 
-    void Start()
-    {
-        //ステージマネージャー
-        stageManager = GameObject.Find("StageManager").GetComponent<StageManager>();
-    }
-
     //プレイヤーもしくはフリスビーが触れた場合
     private void OnTriggerEnter(Collider other)
     {
         if (other.CompareTag(frisbeeTag) || other.CompareTag(playerTag))
         {
-            //ステージマネージャーのポイントを増やす
-            stageManager.StorePoint(point);
-
-            //その後消滅させる
+            //消滅させる
             Destroy(this.gameObject);
+        }
+    }
+
+    //コイン取得時のスコアを返す
+    public int Score
+    {
+        get
+        {
+            return score;
         }
     }
 }

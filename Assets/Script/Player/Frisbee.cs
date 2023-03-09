@@ -1,7 +1,7 @@
 using UnityEngine;
 using System.Collections;
 
-public abstract class Frisbee : MonoBehaviour, IMovable, IRoatatable, FrisbeeUnit, IDienable
+public class Frisbee : MonoBehaviour, IMovable, IRoatatable, FrisbeeUnit, IDienable<int>
 {
     //フリスビーの移動状態
     //例えば上キーを押した場合UPになる
@@ -66,7 +66,6 @@ public abstract class Frisbee : MonoBehaviour, IMovable, IRoatatable, FrisbeeUni
 
     //判定
     private bool isStart = false; //フリスビーが開始位置についたかどうか(StartPosについたらtrue)
-    private bool isDead = false; //死亡判定
     protected bool isInvincible = false; //無敵かどうか(障害物に衝突後無敵時間を付ける)
     private bool isRetryed = false; //リザルトUIが複数回呼び出されるのを防ぐ
 
@@ -80,7 +79,6 @@ public abstract class Frisbee : MonoBehaviour, IMovable, IRoatatable, FrisbeeUni
     //インスタンス
     protected Rigidbody rb; //リジットボディ
     private CameraFollower cameraFollower; //カメラを追従させるスクリプト
-    private Frisbee_HurtBox frisbee_Hurt; //当たり判定
     private Renderer render; //レンダラー
     private StageManager stageManager; //ステージマネージャー(ポーズの呼び出し、リトライUIの呼びだしに必要)
 
@@ -96,9 +94,6 @@ public abstract class Frisbee : MonoBehaviour, IMovable, IRoatatable, FrisbeeUni
 
         //レンダー
         render = GetComponent<Renderer>();
-
-        //当たり判定
-        frisbee_Hurt = GetComponent<Frisbee_HurtBox>();
 
         //フリスビーが移動中に画面端に集中線を表示させ、スピード感を出す
         speedEff = GameObject.Find("Canvas/SpeedEffect").GetComponent<ParticleSystem>();
@@ -124,7 +119,7 @@ public abstract class Frisbee : MonoBehaviour, IMovable, IRoatatable, FrisbeeUni
         throwSpeed = (StartPos.transform.position.z - this.transform.position.z) / 1.5f;
 
         //SE
-        SEManager.seManager.PlaySE(throwSEVol, throwSE);
+        SEManager.I.PlaySE(throwSEVol, throwSE);
     }
 
 
@@ -159,7 +154,7 @@ public abstract class Frisbee : MonoBehaviour, IMovable, IRoatatable, FrisbeeUni
     {
 
         //死亡時
-        if (isDead)
+        if (currentState == State.Dead)
         {
             Gravity();
             return;
@@ -187,9 +182,6 @@ public abstract class Frisbee : MonoBehaviour, IMovable, IRoatatable, FrisbeeUni
         if (isStart)
         {
             rb.velocity = new Vector3(rb.velocity.x, rb.velocity.y, zSpeed);
-
-            //死亡判定を取得
-            isDead = frisbee_Hurt.isDeadCheck();
 
             //各種メソッド
             Move();
@@ -560,6 +552,7 @@ public abstract class Frisbee : MonoBehaviour, IMovable, IRoatatable, FrisbeeUni
 
     public void TheDie(int type)
     {
+        currentState = State.Dead;
         StartCoroutine(Die(type));
     }
 
@@ -573,9 +566,8 @@ public abstract class Frisbee : MonoBehaviour, IMovable, IRoatatable, FrisbeeUni
             yield break;
         }
 
-
         //死亡位置を記録
-        stageManager.deadPos = this.transform.position.z;
+        var deadPos = this.transform.position.z;
 
         //集中線を消す
         speedEff.Stop();
@@ -604,7 +596,7 @@ public abstract class Frisbee : MonoBehaviour, IMovable, IRoatatable, FrisbeeUni
         rb.AddForce(new Vector3(0, -0.5f, -0.5f), ForceMode.Impulse);
 
         //リトライUIを表示
-        stageManager.Retry();
+        stageManager.Retry(deadPos);
 
         isRetryed = true;
 
@@ -641,7 +633,7 @@ public abstract class Frisbee : MonoBehaviour, IMovable, IRoatatable, FrisbeeUni
     /// </summary>
     public void Gravity()
     {
-        if (isDead)
+        if (currentState == State.Dead)
         {
             gravity = 20;
         }
@@ -657,13 +649,26 @@ public abstract class Frisbee : MonoBehaviour, IMovable, IRoatatable, FrisbeeUni
     /// </summary>
     public void ReduceLife()
     {
-        SEManager.seManager.PlaySE(damageSEVol, damageSE);
+        SEManager.I.PlaySE(damageSEVol, damageSE);
 
         //HPを減らす
         HP -= 1;
 
         //UIのハートも減らす
-        stageManager.ReduceHPUI();
+        stageManager.TakeDamage();
+    }
+
+    /// <summary>
+    /// ゴールと衝突したとき
+    /// </summary>
+    public void Clear()
+    {
+        //フィニッシュ演出
+        StartCoroutine(stageManager.Finish());
+
+        //操作無効に
+        this.enabled = false;
+
     }
 
     /// <summary>
@@ -681,9 +686,15 @@ public abstract class Frisbee : MonoBehaviour, IMovable, IRoatatable, FrisbeeUni
 
     //コイン取得時のエフェクト
     //エフェクトはインスペクタから設定
-    public void PlayCoinEffect()
+    public void GetCoin(int score)
     {
-        SEManager.seManager.PlaySE(coinSEVol, coinSE);
+        //SE
+        SEManager.I.PlaySE(coinSEVol, coinSE);
+
+        //スコア加算
+        stageManager.StorePoint(score);
+
+        //エフェクト
         coinEffect.Play();
     }
 
@@ -711,5 +722,5 @@ public abstract class Frisbee : MonoBehaviour, IMovable, IRoatatable, FrisbeeUni
         get { return HP; }
     }
 
-    protected abstract void Dodge();
+    protected virtual void Dodge() { }
 }

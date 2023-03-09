@@ -39,7 +39,7 @@ public class Obstacle_Tree : Collisionable_Obstacle, IRoatatable
 
             if (!isSounded)
             {
-                SEManager.seManager.PlaySE(rotateSEVol, rotateSE);
+                SEManager.I.PlaySE(rotateSEVol, rotateSE);
                 isSounded = true;
             }
             else

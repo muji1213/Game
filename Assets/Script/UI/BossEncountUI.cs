@@ -18,7 +18,7 @@ public class BossEncountUI : MonoBehaviour
     {
         anim = GetComponent<Animator>();
         //SE
-        SEManager.seManager.PlaySE(SEVol, SE);
+        SEManager.I.PlaySE(SEVol, SE);
     }
 
     // Update is called once per frame

@@ -35,6 +35,6 @@ public class BossEndTrigger : Trigger
         cameraFollower.Shake(0.5f, 1.0f);
 
         //”š”­‰¹
-        SEManager.seManager.PlaySE(explosionSEVol, explosion);
+        SEManager.I.PlaySE(explosionSEVol, explosion);
     }
 }

@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 8726406218906844217}
   - component: {fileID: 3157316352102293979}
   - component: {fileID: 6753383680953964505}
-  m_Layer: 8
+  m_Layer: 0
   m_Name: GroundChecker
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2312,8 +2312,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2b7eab03075630f44b840a7f0247a6e8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  zSpeed: 2
-  xSpeed: 2
+  zMoveSpeed: 0
+  xMoveSpeed: 0
   jumpSpeed: 400
   gravity: 30
   frisbee: {fileID: 3270074514040271237, guid: 88f6bf9b4b9f9a54aa16ea7eca37f87e, type: 3}
@@ -2343,10 +2343,13 @@ MonoBehaviour:
     m_RotationOrder: 4
   groundChecker: {fileID: 6753383680953964505}
   damageSE: {fileID: 8300000, guid: 4d9c814026e00fa4bb2d7430de358d18, type: 3}
+  damageSEVol: 1
   coinEffect: {fileID: 6149269439049103754}
   coinSE: {fileID: 8300000, guid: 463c76b0f4528664c949069684bce115, type: 3}
-  runSE: {fileID: 8300000, guid: ca18f24cad954e848ac1b0748c11f8fa, type: 3}
+  coinSEVol: 1
   lifeUP: {fileID: 8300000, guid: 3acc675446b3b7348a4f2c2fd9b05f59, type: 3}
+  lifeUPSEVol: 1
+  lifeUPEffect: {fileID: 0}
   MaxHPTime: 0
   runTime: 0
 --- !u!114 &1385517545401389704

@@ -937,13 +937,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 69434acc3481cd84c9206cb90e21d10f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  stageManager: {fileID: 0}
   getPointText: {fileID: 3681411184196294379}
   nodamageText: {fileID: 3681411184625315535}
   maxHPText: {fileID: 3681411185639204009}
   totalPointText: {fileID: 3681411184830203282}
-  nodamagePoint: 400
-  maxHPPoint: 300
 --- !u!95 &3681411185928807961
 Animator:
   serializedVersion: 4
@@ -1312,14 +1309,14 @@ PrefabInstance:
     - target: {fileID: 322930766994111899, guid: fbeeb6a1b8e762a4e891640867e047db, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
-      objectReference: {fileID: 3681411185928807966}
+      objectReference: {fileID: 5824108089621860369, guid: 2e6bd6bc9aa1c2642aa43b277ca2ee51, type: 3}
     - target: {fileID: 322930766994111899, guid: fbeeb6a1b8e762a4e891640867e047db, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
       value: ToStageSelectScene
       objectReference: {fileID: 0}
     - target: {fileID: 322930766994111899, guid: fbeeb6a1b8e762a4e891640867e047db, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
-      value: ResultUI, Assembly-CSharp
+      value: StageManager, Assembly-CSharp
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: fbeeb6a1b8e762a4e891640867e047db, type: 3}

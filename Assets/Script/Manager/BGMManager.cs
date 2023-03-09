@@ -1,25 +1,12 @@
 using UnityEngine;
 
-public class BGMManager : MonoBehaviour
+public class BGMManager : SingleTon<BGMManager>
 {
-    public static BGMManager bgmManager = null;
-
     AudioSource bgmAudioSource;
-   
-    //一つしか存在しないようにする
-    void Awake()
+
+    protected override void Init()
     {
         bgmAudioSource = GetComponent<AudioSource>();
-
-        if (bgmManager == null)
-        {
-            bgmManager = this;
-        }
-        else
-        {
-            Destroy(this.gameObject);
-        }
-        DontDestroyOnLoad(gameObject);
     }
 
     //BGMのプロパティ

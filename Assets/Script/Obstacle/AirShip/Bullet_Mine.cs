@@ -27,7 +27,7 @@ public class Bullet_Mine : Bullet
         base.Start();
 
         audioSource = GetComponent<AudioSource>();
-        audioSource.volume *= SEManager.seManager.seVol;
+        audioSource.volume *= SEManager.I.seVol;
 
         hitBox = GetComponent<SphereCollider>();
         hitBox.enabled = false;

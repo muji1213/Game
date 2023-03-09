@@ -16,19 +16,19 @@ public class AllClearUI : MonoBehaviour
     private void OnEnable()
     {
         //演出中はBGMを止めるため、音量を記録
-        volume = BGMManager.bgmManager.BgmVolume;
+        volume = BGMManager.I.BgmVolume;
 
         //音量0に
-        BGMManager.bgmManager.BgmVolume = 0.0f;
+        BGMManager.I.BgmVolume = 0.0f;
 
         //SE
-        SEManager.seManager.PlaySE(SEVol, SE);
+        SEManager.I.PlaySE(SEVol, SE);
     }
 
     public void Deactive()
     {
         //ボタンを押下時にBGMの音量を戻す
-        BGMManager.bgmManager.BgmVolume = volume;
+        BGMManager.I.BgmVolume = volume;
 
         //非アクティブに
         this.gameObject.SetActive(false);

@@ -1,29 +1,27 @@
 using System.Collections;
 using UnityEngine;
+using OnStage;
 
 //このスクリプトはステージシーンの管理をする
-public class StageManager : SceneChanger
+public class StageManager : MonoBehaviour
 {
+    [Header("UIマネージャー")] [SerializeField] OnStage.UIManager uiManager;
+
+    [Header("ステージ関連")]
+    [Header("ノーダメージの時の加算スコア")] [SerializeField] int noDamageAddPoint;
+    [Header("HP満タンになるまで走った時の加算スコア")] [SerializeField] int maxHPAddPoint;
+
+    [Header("カメラ関連")]
+    [Header("フィニッシュ演出用のカメラ")] [SerializeField] Camera finishCam;
+    [Header("ステージ入場カメラ")] [SerializeField] StageEnterCamera stageEnterCamera;
     [Header("メインカメラに表示させるキャンバス")] [SerializeField] Canvas canvas;
     [Header("フィニッシュカメラに映すキャンバス")] [SerializeField] GameObject finishCanvas;
 
+    [Header("オブジェクト関連")]
     [Header("Player")] [SerializeField] Player_Controller player;
-
-    [Header("フィニッシュ演出用のカメラ")] [SerializeField] Camera finishCam;
-    [Header("ステージクリア後に表示するUI")] [SerializeField] GameObject resultUI;
-    [Header("ポーズUI")] [SerializeField] GameObject poseUI;
-    [Header("リトライUI")] [SerializeField] GameObject retryUI;
-    [Header("ポイントUI")] [SerializeField] GameObject scoreUI;
-    [Header("ライフUI")] [SerializeField] GameObject lifeUI;
-    [Header("ゲージUI")] [SerializeField] GameObject gaugeUI;
-    [Header("評価UI")] [SerializeField] GameObject evaluateUI;
-
-    [Header("リザルトのスクリプト")] [SerializeField] ResultUI result;
-    [Header("カウントダウンスクリプト")] [SerializeField] CountDown countDown;
-    [Header("フェードインのスクリプト")] [SerializeField] Fade fadeIn;
-
     [Header("ターゲットのゲームオブジェクト")] [SerializeField] GameObject target;
 
+    [Header("音関連")]
     [Header("BGM")] [SerializeField] AudioClip bgm;
     [Header("ターゲットとの衝突時のSE")] [SerializeField] AudioClip colSE;
     [Header("衝突SEの音量")] [SerializeField] [Range(0, 1)] float colSEVol = 1;
@@ -33,28 +31,25 @@ public class StageManager : SceneChanger
     [Header("リザルトSEの音量")] [SerializeField] [Range(0, 1)] float successSEVol = 1;
     [Header("ミスしたときのSE")] [SerializeField] AudioClip missedSE;
     [Header("ミスSEの音量")] [SerializeField] [Range(0, 1)] float missSEVol = 1;
-    [Header("ステージ入場カメラ")] [SerializeField] StageEnterCamera stageEnterCamera;
 
-    [HideInInspector] public int temporarilypoint; //ステージで取得したポイントを保持、ステージクリア後、ゲームマネージャに加算する
+    //ステージで取得したポイントを保持、ステージクリア後、ゲームマネージャに加算する
+    private int temporarilyScore;
 
     //リザルトの加点判定
-    [HideInInspector] public bool isNodamage;
-    [HideInInspector] public bool isMaxHP;
+    private bool isNodamage;
+    private bool isMaxHP;
+
+    //トータルスコア
+    private int totalScore = 0;
 
     //ステージのゴール位置
-    [HideInInspector] public float goalPos;
-
-    //ステージの死亡位置
-    [HideInInspector] public float deadPos;
+    private float goalPos;
 
     //ポーズ中かどうか
     private bool isPose = false;
 
     //UIおよびプレイヤーの操作を有効にしたか
     private bool isStart = false;
-
-    //クリアしたかどうか（これはゴールのゲームオブジェクト側からTrueにされる）
-    [HideInInspector] public bool isCleared = false;
 
     //カメラ追従用のスクリプト
     private CameraFollower cameraFollower;
@@ -72,7 +67,7 @@ public class StageManager : SceneChanger
         finishCanvas.SetActive(false);
 
         //ステージで取得したポイントを初期化
-        temporarilypoint = 0;
+        temporarilyScore = 0;
 
         //リザルト判定の初期値を設定
         isNodamage = true;
@@ -82,21 +77,27 @@ public class StageManager : SceneChanger
         goalPos = target.transform.position.z;
 
         //BGM
-        BGMManager.bgmManager.PlayBgm(bgm);
+        BGMManager.I.PlayBgm(bgm);
 
+        //スタート時はプレイヤーを停止
         StopPlayerControll();
+
+        //UIを初期化
+        uiManager.Inicialize();
     }
 
     private void Update()
     {
         //カウントダウンが終わるまで操作無効
-        if (!countDown.isCountdownEnd)
+        if (!uiManager.isCountDownEnd())
         {
             //フェードが終わったら
-            if (fadeIn.isAnimEnd)
+            if (uiManager.isFadeEnd())
             {
+                //スタート演出を流す
                 stageEnterCamera.StartMovie();
 
+                //演出が終わったら、プレイヤーにカメラを追従させる
                 if (stageEnterCamera.MovieFinished())
                 {
                     cameraFollower.enabled = true;
@@ -107,7 +108,7 @@ public class StageManager : SceneChanger
                 }
 
                 //カウントダウンスタート
-                countDown.StartCountDown();
+                uiManager.ActiveCountDownUI();
             }
             return;
         }
@@ -116,23 +117,22 @@ public class StageManager : SceneChanger
             //UIを配置する
             if (!isStart)
             {
+                //プレイヤーの操作を有効にする
                 MovePlayer();
-                scoreUI.SetActive(true);
-                gaugeUI.SetActive(true);
+
+                //UIを有効にする
+                uiManager.ActiveGaugeUI();
+                uiManager.ActiveScoreUI();
+
                 isStart = true;
             }
-            //ゴールのゲームオブジェクトに衝突後、リザルトを呼び出す
-            if (isCleared)
-            {
-                //リザルトUI呼び出し
-                Invoke("ActiveResult", 2.0f);
-
-                //クリアフラグをfalse
-                isCleared = false;
-
-                result.SetPoint();
-            }
         }
+    }
+
+    private void FixedUpdate()
+    {
+        //ゲージをためる
+        uiManager.ChargeGaugeUI(GetRunTime());
     }
 
     /// <summary>
@@ -141,32 +141,27 @@ public class StageManager : SceneChanger
     /// </summary>
     public void SetUIAndLife(int frisbeeHP, bool isLifeUp)
     {
-        //
-        evaluateUI.SetActive(true);
-        evaluateUI.GetComponent<EvaluateUI>().Evaluate(frisbeeHP);
-
-        //
-        lifeUI.SetActive(true);
-        lifeUI.GetComponent<Life>().SetInitialLife(frisbeeHP);
+        //UIを表示する
+        uiManager.ActiveEvaluateUIAndLife(frisbeeHP);
 
         //最大HPまで走ったフラグをTrueにする
 
         //ライフアップを取っていた場合、4が最大HPになる
         if (isLifeUp)
         {
-            if(frisbeeHP == 4)
+            if (frisbeeHP == 4)
             {
                 isMaxHP = true;
             }
             else
             {
-                isMaxHP = fadeIn;
+                isMaxHP = false;
             }
         }
         //取っていない場合、3が最大HPになる
         else
         {
-            if(frisbeeHP == 3)
+            if (frisbeeHP == 3)
             {
                 isMaxHP = true;
             }
@@ -178,27 +173,33 @@ public class StageManager : SceneChanger
     }
 
     //ステージで取得したポイントを一時的に保持する
+    //スコアテキストを変更する
     //途中でリタイアした際、ポイントを加算できないようにする
     public void StorePoint(int point)
     {
-        temporarilypoint += point;
+        temporarilyScore += point;
+        uiManager.ChangeScoreUI(temporarilyScore);
     }
 
     //ステージクリア後、ゲームマネージャにポイントを加算
-    public void AddPoint()
+    public void AddPoint(int score)
     {
-        GameManager.gameManager.point += temporarilypoint;
+        GameManager.I.Point += score;
 
         //一時ポイントを0に
-        temporarilypoint = 0;
+        temporarilyScore = 0;
     }
 
     /// <summary>
-    /// フリスビーが障害物に衝突時、ライフを減らす
+    /// フリスビーが障害物に衝突時、ライフUIを減らし、ノーダメージフラグはfalseに
     /// </summary>
-    public void ReduceHPUI()
+    public void TakeDamage()
     {
-        lifeUI.GetComponent<Life>().DestroyLife();
+        //UIのハートを一個減らす
+        uiManager.ReduceHPUI();
+
+        //振動させる
+        cameraFollower.Shake(0.3f, 1.0f);
 
         //ノーダメージフラグはOFFに
         if (isNodamage)
@@ -211,7 +212,7 @@ public class StageManager : SceneChanger
     public IEnumerator Finish()
     {
         //SE
-        SEManager.seManager.PlaySE(colSEVol, colSE);
+        SEManager.I.PlaySE(colSEVol, colSE);
 
         //フィニッシュキャンバスをONに
         ActiveFinishCanvas();
@@ -230,10 +231,13 @@ public class StageManager : SceneChanger
         Time.timeScale = 1.0f;
 
         //SE
-        SEManager.seManager.PlaySE(blowSEVol, blowSE);
+        SEManager.I.PlaySE(blowSEVol, blowSE);
 
         //フィニッシュキャンバスをOFFに
         DeactiveFinishCanvas();
+
+        //リザルト呼び出し
+        Invoke("ActiveResult", 2.0f);
     }
 
     /// <summary>
@@ -249,7 +253,7 @@ public class StageManager : SceneChanger
             isPose = true;
 
             //ポーズUI表示
-            poseUI.SetActive(true);
+            uiManager.ActivePoseUI();
 
             //ゲーム時間を停止
             Time.timeScale = 0.0f;
@@ -260,7 +264,7 @@ public class StageManager : SceneChanger
             isPose = false;
 
             //ポーズUIを非表示
-            poseUI.SetActive(false);
+            uiManager.DeactivePoseUI();
 
             //ゲーム時間を戻す
             Time.timeScale = 1.0f;
@@ -270,15 +274,17 @@ public class StageManager : SceneChanger
     /// <summary>
     /// プレイヤーもしくはフリスビーが死亡した際に呼び出す
     /// </summary>
-    public void Retry()
+    public void Retry(float deadPos)
     {
+        StopPlayerControll();
+
         //SE
-        SEManager.seManager.PlaySE(missSEVol, missedSE);
+        SEManager.I.PlaySE(missSEVol, missedSE);
 
         //どれだけの割合進んだかの割合を出す
         var value = Mathf.Clamp((float)deadPos / (float)goalPos, 0, 1);
-        retryUI.SetActive(true);
-        retryUI.GetComponent<RetryUI>().SetClearPer(value);
+
+        uiManager.ActiveRetryUI(value);
     }
 
     /// <summary>
@@ -296,7 +302,6 @@ public class StageManager : SceneChanger
     /// </summary>
     public void MovePlayer()
     {
-        Debug.Log("操作を有効か");
         player.enabled = true;
     }
 
@@ -305,7 +310,6 @@ public class StageManager : SceneChanger
     /// </summary>
     public void StopPlayerControll()
     {
-        Debug.Log("操作を無効か");
         player.enabled = false;
     }
 
@@ -331,15 +335,81 @@ public class StageManager : SceneChanger
     public void ActiveResult()
     {
         //SE
-        SEManager.seManager.PlaySE(successSEVol, successSE);
+        SEManager.I.PlaySE(successSEVol, successSE);
 
         //カメラを変更する
         canvas.worldCamera = finishCam;
 
+        var noDamageAddPoint = 0;
+        var maxHPAddPoint = 0;
+
+        //ノーダメージかどうか
+        switch (isNodamage)
+        {
+            //ノーダメージなら設定した分加算する
+            case true:
+                noDamageAddPoint = this.noDamageAddPoint;
+                break;
+
+            case false:
+                noDamageAddPoint = 0;
+                break;
+        }
+
+        //最大HPまで走ったか
+        switch (isMaxHP)
+        {
+            //走ったなら設定した分加算する
+            case true:
+                maxHPAddPoint = this.maxHPAddPoint;
+                break;
+
+            case false:
+                maxHPAddPoint = 0;
+                break;
+        }
+
         //リザルトUIを表示
-        resultUI.SetActive(true);
+        uiManager.ActiveResultUI(temporarilyScore, noDamageAddPoint, maxHPAddPoint);
+
+        //トータルスコアを算出する
+        totalScore = temporarilyScore + maxHPAddPoint + noDamageAddPoint;
+
+        //ゲームマネージャーにスコア加算
+        AddPoint(totalScore);
 
         //ステージをクリア扱いにする
-        StageSelectManager.stageSelectManager.AvtiveStageClearFlag(StageSelectManager.selectedStageNum);
+        StageSelectManager.I.AvtiveStageClearFlag(GameManager.I.SelectedStageInfo.StageNum);
+    }
+
+    //再度このシーンをやり直す（リトライ）
+    public void ReTryThisScene()
+    {
+        //ゲーム時間を戻し、リトライ
+        Time.timeScale = 1.0f;
+        SceneChanger.I.Retry();
+    }
+
+    //タイトルへ
+    public void ToTitleScene()
+    {
+        //ゲーム時間を戻し、タイトルへ
+        Time.timeScale = 1.0f;
+        SceneChanger.I.ToTitleScene();
+    }
+
+    //ポーズ画面でつづけるを押したとき、ゲームを続行させる
+    public void ContinueGame()
+    {
+        Time.timeScale = 1.0f;
+        uiManager.DeactivePoseUI();
+    }
+
+    //ステージセレクトへ
+    public void ToStageSelectScene()
+    {
+        //ゲーム時間を戻し、ステージセレクトへ
+        Time.timeScale = 1.0f;
+        SceneChanger.I.ToStageSelectScene();
     }
 }

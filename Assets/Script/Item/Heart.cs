@@ -2,20 +2,27 @@ using UnityEngine;
 
 public class Heart : MonoBehaviour
 {
+    private enum State
+    {
+        Idle,
+        Obtained
+    }
+
+    //ステート
+    private State state;
+
     //アニメータ
     private Animator anim;
 
-    //取得されたか
-    private bool isGot = false;
-
     private void Start()
     {
+        state = State.Idle;
         anim = GetComponent<Animator>();
     }
     private void FixedUpdate()
     {
         //取得アニメーションが終了したら消す
-        if (isGot)
+        if (state == State.Obtained)
         {
             if(anim.GetCurrentAnimatorStateInfo(0).normalizedTime >= 1)
             {
@@ -28,7 +35,7 @@ public class Heart : MonoBehaviour
     {
         if (other.CompareTag("Player"))
         {
-            isGot = true;
+            state = State.Obtained;
 
             //取得アニメーション再生
             anim.SetTrigger("End");

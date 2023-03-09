@@ -1,51 +1,19 @@
+ï»¿using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
-public class Obstacle_Planet : Collisionable_Obstacle, IMovable
+public class Obstacle_Planet : Collisionable_Obstacle, IRoatatable
 {
-    [Header("“®‚­‘¬‚³")] [SerializeField] float speed;
-    [Header("“®‚­Œü‚«")] [SerializeField] Vector3 direction;
-    [Header("‰ñ“]•ûŒü")] [SerializeField] Vector3 rotateDirection;
-    [Header("‰ñ“]ƒXƒs[ƒh")] [SerializeField] float rotateSpeed;
+    [Header("å›è»¢æ–¹å‘")] [SerializeField] Vector3 rotateDirection;
+    [Header("å›è»¢ã‚¹ãƒ”ãƒ¼ãƒ‰")] [SerializeField] float rotateSpeed;
 
-    [Header("ƒtƒŠƒXƒr[ƒgƒŠƒK[")] [SerializeField] CheckFrisbeeEnter checkFrisbeeEnter;
-
-    //ƒgƒŠƒK[‚Å“®‚­ƒ^ƒCƒv‚Ìƒtƒ‰ƒO
-    private bool isMove = false;
-
-    //“®‚©‚È‚¢ƒ^ƒCƒv
-    private bool isStop = false;
-
-    private void Update()
+    public void Rotate()
     {
-        if (isMove)
-        {
-            Destroy(this.gameObject, 8);
-        }
-    }
-
-    public void Move()
-    {
-        this.transform.position += direction * speed;
         this.transform.Rotate(rotateDirection * rotateSpeed);
     }
 
     private void FixedUpdate()
     {
-        //ƒCƒ“ƒXƒyƒNƒ^‚ÅƒgƒŠƒK[‚ªİ’è‚³‚ê‚Ä‚¢‚é‚È‚ç
-        if (checkFrisbeeEnter != null)
-        {
-            //ƒgƒŠƒK[‚ğƒtƒŠƒXƒr[‚ª’Ê‰ß‚µ‚½‚ç“®‚­
-            isMove = checkFrisbeeEnter.CheckEnterFrisbee();
-        }
-        else
-        {
-            isStop = true;
-        }
 
-
-        if (isMove || isStop)
-        {
-            Move();
-        }
     }
 }

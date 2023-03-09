@@ -36,22 +36,6 @@ public class RetryUI : MonoBehaviour
         forwardGauge.transform.localScale = new Vector2(scaleX, 1.0f);
     }
 
-    //リトライを押した場合
-    public void Retry()
-    {
-        //ゲーム時間を戻し、再度シーンを読み込む
-        Time.timeScale = 1.0f;
-        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
-    }
-
-    //ステージセレクトへを押した場合
-    public void ReturnStageSelect()
-    {
-        //ゲーム時間を戻し、ステージセレクトへ
-        Time.timeScale = 1.0f;
-        SceneManager.LoadScene("StageSelect");
-    }
-
     public void SetClearPer(float per)
     {
         //一回呼び出されたら移行処理しない

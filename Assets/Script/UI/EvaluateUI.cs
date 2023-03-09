@@ -23,7 +23,7 @@ public class EvaluateUI : MonoBehaviour
     private void OnEnable()
     {
         //ステージマネージャ側からactiveにされるので、Enableで一度だけ呼ぶ
-        SEManager.seManager.PlaySE(SEVol, SE);
+        SEManager.I.PlaySE(SEVol, SE);
     }
 
     //typeはFrisbeeのHP

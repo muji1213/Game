@@ -19,11 +19,7 @@ public class Frisbee_HurtBox : MonoBehaviour
     //死亡判定（穴、もしくはゴールが外れた場合）
     private string deadColTag = "DeadCol";
 
-    //死亡判定
-    private bool isDead = false;
-
     private Frisbee frisbee; //フリスビーのスクリプト
-    private CameraFollower cameraFollower; //カメラ追従用のスクリプト
     private MeshCollider meshCollider;
 
     private void Start()
@@ -33,31 +29,9 @@ public class Frisbee_HurtBox : MonoBehaviour
         //フリスビー
         frisbee = GetComponent<Frisbee>();
 
-        //カメラ追従用のスクリプト
-        cameraFollower = GameObject.Find("Main Camera").GetComponent<CameraFollower>();
-
         //メッシュコライダー
         meshCollider = GetComponent<MeshCollider>();
     }
-
-    /// <summary>
-    /// 死亡判定取得メソッド
-    /// プレイヤーもしくはフリスビーが死亡した際にTrueを返す
-    /// </summary>
-    /// <returns></returns>
-    public bool isDeadCheck()
-    {
-        if (isDead)
-        {
-            meshCollider.enabled = false;
-            return true;
-        }
-        else
-        {
-            return false;
-        }
-    }
-
 
     //衝突判定
 
@@ -68,10 +42,6 @@ public class Frisbee_HurtBox : MonoBehaviour
         //障害物との衝突判定
         if (collision.gameObject.tag == obstacleTag)
         {
-            //衝突時、カメラを振動させる
-            cameraFollower.Shake(0.3f, 1f);
-
-
             //障害物との衝突がフリスビーだった場合
             //
             //分岐
@@ -87,7 +57,7 @@ public class Frisbee_HurtBox : MonoBehaviour
 
                 //フリスビーと障害物のレベルを比較
                 //フリスビーの方が低ければ
-                if (obstacle.level >= StageSelectManager.selectedFrisbee.FrisbeeLevel)
+                if (obstacle.level >= GameManager.I.SelectedFrisbeeInfo.FrisbeeLevel)
                 {
                     //ライフを減らす
                     frisbee.ReduceLife();
@@ -99,8 +69,6 @@ public class Frisbee_HurtBox : MonoBehaviour
 
                         //死亡判定をTrueに
                         frisbee.TheDie(0);
-                        isDead = true;
-
                     }
                     //0より大きければ
                     else
@@ -119,14 +87,13 @@ public class Frisbee_HurtBox : MonoBehaviour
         }
         else
         {
-            isDead = false;
+           
         }
 
         //フリスビーがターゲット（ゴール）と衝突した場合
         if (collision.gameObject.tag == targetTag)
         {
-            //フリスビーの操作を無効にする
-            frisbee.enabled = false;
+            frisbee.Clear();
 
             meshCollider.enabled = false;
 
@@ -149,7 +116,6 @@ public class Frisbee_HurtBox : MonoBehaviour
 
                 //死亡判定をTrueに
                 frisbee.TheDie(1);
-                isDead = true;
             }
         }
 
@@ -162,8 +128,6 @@ public class Frisbee_HurtBox : MonoBehaviour
 
             if (frisbee.GetHP <= 0)
             {
-                isDead = true;
-                
                 frisbee.TheDie(0);
             }
             else
@@ -178,7 +142,9 @@ public class Frisbee_HurtBox : MonoBehaviour
         {
             if (this.gameObject.tag == frisbeeTag)
             {
-                frisbee.PlayCoinEffect();
+                int score = other.GetComponent<Coin>().Score;
+
+                frisbee.GetCoin(score);
             }
 
         }

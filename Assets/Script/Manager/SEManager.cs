@@ -1,29 +1,16 @@
 using UnityEngine;
 
-public class SEManager : MonoBehaviour
+public class SEManager : SingleTon<SEManager>
 {
-    public static SEManager seManager = null;
-
     //オーディオソース
     public AudioSource seAudioSource;
 
     //音量
     public float seVol;
 
-    //ゲーム内に一つしか存在しない
-    void Start()
+    protected override void Init()
     {
         seAudioSource = GetComponent<AudioSource>();
-
-        if (seManager == null)
-        {
-            seManager = this;
-        }
-        else
-        {
-            Destroy(this.gameObject);
-        }
-        DontDestroyOnLoad(gameObject);
     }
 
     //SEのボリューム設定

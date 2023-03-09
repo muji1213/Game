@@ -11,14 +11,8 @@ public class Obstacle_Blackhole : UnCollisionable_Obstacle
     private void Start()
     {
         audioSource = GetComponent<AudioSource>();
-        audioSource.volume *= (SEManager.seManager.seVol);
+        audioSource.volume *= (SEManager.I.seVol);
     }
-
-    private void FixedUpdate()
-    {
-       
-    }
-
 
     private void OnTriggerStay(Collider other)
     {

@@ -512,7 +512,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 3
+  m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &215765646
 GameObject:
@@ -2076,8 +2076,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1766469498}
-        m_TargetAssemblyTypeName: StageSelectManager, Assembly-CSharp
+      - m_Target: {fileID: 1766469500}
+        m_TargetAssemblyTypeName: StageSelect, Assembly-CSharp
         m_MethodName: ToShopScene
         m_Mode: 1
         m_Arguments:
@@ -2136,7 +2136,7 @@ GameObject:
   - component: {fileID: 1262684432}
   - component: {fileID: 1262684433}
   m_Layer: 5
-  m_Name: Button
+  m_Name: GoStageButton
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2208,8 +2208,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1766469498}
-        m_TargetAssemblyTypeName: StageSelectManager, Assembly-CSharp
+      - m_Target: {fileID: 1766469500}
+        m_TargetAssemblyTypeName: StageSelect, Assembly-CSharp
         m_MethodName: ToStageScene
         m_Mode: 1
         m_Arguments:
@@ -2300,54 +2300,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1280989066}
   m_CullTransparentMesh: 1
---- !u!1 &1383160484
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1383160486}
-  - component: {fileID: 1383160485}
-  m_Layer: 0
-  m_Name: ItemManager
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &1383160485
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1383160484}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a5dd8912a7b5787478e0c08d556f7198, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  Frisbees:
-  - {fileID: 3270074514040271237, guid: 88f6bf9b4b9f9a54aa16ea7eca37f87e, type: 3}
-  - {fileID: 3270074514040271237, guid: 989b13d0b24b9fd40a5c1095d7dbcc73, type: 3}
-  - {fileID: 1883525041929112328, guid: e765104e50764024ab6d0fd035b0cf95, type: 3}
---- !u!4 &1383160486
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1383160484}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 7.4403114, y: -5.9999313, z: 90}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_RootOrder: 5
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1405416771
 GameObject:
   m_ObjectHideFlags: 0
@@ -2753,8 +2705,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1766469498}
-        m_TargetAssemblyTypeName: SceneChanger, Assembly-CSharp
+      - m_Target: {fileID: 1766469500}
+        m_TargetAssemblyTypeName: StageSelect, Assembly-CSharp
         m_MethodName: ToTitleScene
         m_Mode: 1
         m_Arguments:
@@ -2855,7 +2807,7 @@ GameObject:
   - component: {fileID: 1568435382}
   - component: {fileID: 1568435383}
   m_Layer: 5
-  m_Name: ItemPanel
+  m_Name: FrisbeeSelectPanel
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3154,47 +3106,14 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1766469499}
-  - component: {fileID: 1766469498}
+  - component: {fileID: 1766469500}
   m_Layer: 0
-  m_Name: StageSelectManager
+  m_Name: StageSelect
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &1766469498
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1766469497}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8121ba54a230aa244b57695ef0ec6e7d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  inputSEVol: 1
-  cancelSEVol: 1
-  eventSystem: {fileID: 208978203}
-  startSelectUI: {fileID: 1907677923}
-  startButton: {fileID: 322930767224097812}
-  selectButtonPrefab: {fileID: 4950708376974745161, guid: 7d49af282f554184eaa04ee0c17dcf33, type: 3}
-  itemPanel: {fileID: 1568435381}
-  frisInfoText: {fileID: 310412352}
-  stageNameText: {fileID: 1822784604}
-  stageInfoText: {fileID: 1280989068}
-  stageSprite: {fileID: 1859736818}
-  stageSelectButtonPrefab: {fileID: 1700611431828169848, guid: 4a0c67a0415d3b64098a538b194262d4, type: 3}
-  stagePanel: {fileID: 1609345736}
-  allClearUI: {fileID: 1878991996}
-  arrow: {fileID: 1749208153}
-  goStageButton: {fileID: 1262684433}
-  bgm: {fileID: 8300000, guid: 26423534c3e42f847a9d95525da6ee46, type: 3}
-  inputSE: {fileID: 8300000, guid: 060a19e7b1c4c7b4ca429429be3aae93, type: 3}
-  inputSEVol: 1
-  cancelSE: {fileID: 8300000, guid: 894bc78a4a83dbd4a814c3205ea56068, type: 3}
-  canselSEVol: 1
 --- !u!4 &1766469499
 Transform:
   m_ObjectHideFlags: 0
@@ -3208,8 +3127,39 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 4
+  m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1766469500
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1766469497}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 80f7028f8d4c12244ab76dc57439ca0a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  eventSystem: {fileID: 208978203}
+  displayFrisbeeSelectButton: {fileID: 322930767224097812}
+  selectButtonPrefab: {fileID: 4950708376974745161, guid: 7d49af282f554184eaa04ee0c17dcf33, type: 3}
+  stageNameText: {fileID: 1822784604}
+  stageInfoText: {fileID: 1280989068}
+  stageSprite: {fileID: 1859736818}
+  stageSelectButtonPrefab: {fileID: 1700611431828169848, guid: 4a0c67a0415d3b64098a538b194262d4, type: 3}
+  stagePanel: {fileID: 1609345736}
+  allClearUI: {fileID: 1878991996}
+  frisbeeSelectPanel: {fileID: 1568435381}
+  startSelectUI: {fileID: 1907677923}
+  arrow: {fileID: 1749208153}
+  frisInfoText: {fileID: 310412352}
+  goStageButton: {fileID: 1262684433}
+  bgm: {fileID: 8300000, guid: 26423534c3e42f847a9d95525da6ee46, type: 3}
+  inputSE: {fileID: 8300000, guid: 060a19e7b1c4c7b4ca429429be3aae93, type: 3}
+  inputSEVol: 1
+  cancelSE: {fileID: 8300000, guid: 894bc78a4a83dbd4a814c3205ea56068, type: 3}
+  cancelSEVol: 1
 --- !u!1 &1773445876
 GameObject:
   m_ObjectHideFlags: 0
@@ -3443,6 +3393,37 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1797157624}
   m_CullTransparentMesh: 1
+--- !u!1 &1800791732
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1800791733}
+  m_Layer: 0
+  m_Name: -----------------
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1800791733
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1800791732}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 1.0825288, y: 3.1559777, z: 17.284433}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 3
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1822784602
 GameObject:
   m_ObjectHideFlags: 0
@@ -4029,8 +4010,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1766469498}
-        m_TargetAssemblyTypeName: StageSelectManager, Assembly-CSharp
+      - m_Target: {fileID: 1766469500}
+        m_TargetAssemblyTypeName: StageSelect, Assembly-CSharp
         m_MethodName: DeactiveStartUI
         m_Mode: 1
         m_Arguments:
@@ -4147,7 +4128,15 @@ PrefabInstance:
     - target: {fileID: 322930766994111899, guid: fbeeb6a1b8e762a4e891640867e047db, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
-      objectReference: {fileID: 1766469498}
+      objectReference: {fileID: 1766469500}
+    - target: {fileID: 322930766994111899, guid: fbeeb6a1b8e762a4e891640867e047db, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: ActiveStartUI
+      objectReference: {fileID: 0}
+    - target: {fileID: 322930766994111899, guid: fbeeb6a1b8e762a4e891640867e047db, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: StageSelect, Assembly-CSharp
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: fbeeb6a1b8e762a4e891640867e047db, type: 3}
 --- !u!114 &322930767224097812 stripped

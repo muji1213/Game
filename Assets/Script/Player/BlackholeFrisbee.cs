@@ -12,9 +12,4 @@ public class BlackholeFrisbee : Frisbee
             Destroy(collision.gameObject);
         }
     }
-
-    protected override void Dodge()
-    {
-        return;
-    }
 }

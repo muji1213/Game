@@ -14,7 +14,7 @@ public interface PlayerUnit
 
     public void SetAnimation(bool boolean);
 
-    public void PlayCoinEffect();
+    public void GetCoin(int score);
 
     public void LifeUP();
 

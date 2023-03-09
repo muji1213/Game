@@ -32,7 +32,7 @@ public class Collisionable_Obstacle : MonoBehaviour
 
         //ゲーム開始時、フリスビーのレベルを確認し、自身のほうがレベルが低いなら赤
         //自身のほうが高いなら通常通り表示
-        if (StageSelectManager.selectedFrisbee.FrisbeeLevel > level)
+        if (GameManager.I.SelectedFrisbeeInfo.FrisbeeLevel > level)
         {
             meshRenderer.material.SetTexture("_MainTex",redTex);
         }
@@ -48,7 +48,7 @@ public class Collisionable_Obstacle : MonoBehaviour
         if (collision.gameObject.tag == "Frisbee")
         {
             //フリスビーのレベルのほうが低いなら
-            if (StageSelectManager.selectedFrisbee.FrisbeeLevel <= level)
+            if (GameManager.I.SelectedFrisbeeInfo.FrisbeeLevel <= level)
             {
                 //そのままなにもしない
                 rb.constraints = RigidbodyConstraints.FreezeAll;

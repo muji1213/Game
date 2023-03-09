@@ -2,7 +2,7 @@ using UnityEngine;
 using UnityEngine.UI;
 
 //このスクリプトはカウントダウンの数字の表示およびアニメーションの制御です
-public class CountDown : MonoBehaviour
+public class CountDownUI : MonoBehaviour
 {
     //各種スプライト
     [SerializeField] Sprite one;
@@ -29,19 +29,13 @@ public class CountDown : MonoBehaviour
     private Sprite preSprite = null;
 
     //カウントダウンが終わったかどうか
-    [HideInInspector] public bool isCountdownEnd = false;
-
-    //オーディオソース
-    private AudioSource audioSource;
+    private bool countdownEnd = false;
 
     void Start()
     {
         bg.SetActive(false);
         //アニメーターを取得
         anim = GetComponent<Animator>();
-
-        //オーディオソース
-        audioSource = GetComponent<AudioSource>();
     }
 
     /// <summary>
@@ -63,7 +57,7 @@ public class CountDown : MonoBehaviour
         if (countdownTimer < 0)
         {
             //フラグを立てる
-            isCountdownEnd = true;
+            CountdownEnd = true;
 
             //このゲームオブジェクトは無効に
             this.gameObject.SetActive(false);
@@ -111,12 +105,12 @@ public class CountDown : MonoBehaviour
             if (currentSprite != go)
             {
                 //GoならGo用のSE
-                SEManager.seManager.PlaySE(SEVol, countdownSE);
+                SEManager.I.PlaySE(SEVol, countdownSE);
             }
             else
             {
                 //それ以外なら、１２３用のSE
-                SEManager.seManager.PlaySE(SEVol, goSE);
+                SEManager.I.PlaySE(SEVol, goSE);
             }
             //アニメーションを再生する
             PlayStartAnimation();
@@ -128,5 +122,21 @@ public class CountDown : MonoBehaviour
 
         //現在のスプライトを記憶させる
         preSprite = currentSprite;
+    }
+
+    /// <summary>
+    /// カウントダウンが終わっているかどうか
+    /// 終わっているならtrue
+    /// </summary>
+    public bool CountdownEnd
+    {
+        private set
+        {
+            countdownEnd = value;
+        }
+        get
+        {
+            return countdownEnd;
+        }
     }
 }

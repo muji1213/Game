@@ -16,7 +16,7 @@ public interface FrisbeeUnit
 
     public void Invincible(int time);
 
-    public void PlayCoinEffect();
+    public void GetCoin(int score);
 
     public void PlayDamageEffect(Vector3 pos);
 }

@@ -5,14 +5,18 @@ using UnityEngine;
 //このスクリプトはカメラの追従、および対象の切り替え、画面振動、カメラの切り替えを行う
 public class CameraFollower : MonoBehaviour
 {
+    private enum State
+    {
+        RunPhase,
+        FrisbeePhase,
+        Stop
+    }
+
+    //ステート
+    private State state;
+
     //振動中かどうか
     [HideInInspector]public bool isShake = false;
-
-    //フリスビーを投げた後かどうか、投げる前ならfalse、後ならTrue
-    private bool isStart = false;
-
-    //カメラの追従を停止させるかどうか
-    private bool isStop = false;
 
     //メインカメラ
     [SerializeField] GameObject MainCamera;
@@ -41,6 +45,7 @@ public class CameraFollower : MonoBehaviour
 
     private void Start()
     {
+        state = State.RunPhase;
         //メインカメラはOn
         MainCamera.SetActive(true);
     }
@@ -48,13 +53,13 @@ public class CameraFollower : MonoBehaviour
     private void Update()
     {
         //フリスビーが開始位置についたときにカメラを固定する
-        if (isStop)
+        if (state == State.Stop)
         {
             return;
         }
 
         //プレイヤーが穴に落ちた際、もしくはフリスビーが投げられた際にカメラの位置を移動させる
-        if (!isStart)
+        if (state == State.RunPhase)
         {
             //対象の追いつく速度
             float posSpeed = _positionLerpSpeed;
@@ -106,14 +111,14 @@ public class CameraFollower : MonoBehaviour
         this.transform.position = new Vector3(StartPos.transform.position.x, StartPos.transform.position.y,
                                                 target.transform.position.z + _distanceForwards - 3);
 
-        //開始フラグをTrueに
-        isStart = true;
+        //開始ステートに
+        state = State.FrisbeePhase;
     }
 
     //フリスビーが死亡時、追従を停止させる（フリスビーが下へ落ちていくため）
     public void StopCamera()
     {
-        isStop = true;
+        state = State.Stop;
     }
 
     //カメラ振動メソッド

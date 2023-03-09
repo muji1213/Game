@@ -3,7 +3,7 @@ using UnityEngine;
 
 
 //このスクリプトはフリスビーを投げる前のプレイヤーのスクリプトです
-public class Player_Controller : MonoBehaviour, IMovable, IDienable, PlayerUnit
+public class Player_Controller : MonoBehaviour, IMovable, IDienable<Player_HurtBox.DeadType>, PlayerUnit
 {
     public enum State
     {
@@ -60,22 +60,21 @@ public class Player_Controller : MonoBehaviour, IMovable, IDienable, PlayerUnit
 
     //インスタンス
     private StageManager stageManager; // ステージマネージャー
+    private CameraFollower cameraFollower; //カメラフォロワー
     private Rigidbody rb;  //リジットボディ
-    private Player_HurtBox player_HurtBox; //当たり判定
     private Animator anim; //アニメーター
 
     void Start()
     {
         //コンポーネント取得
+        //カメラ追従用のスクリプト
+        cameraFollower = GameObject.Find("Main Camera").GetComponent<CameraFollower>();
 
         //ステージマネージャー
         stageManager = GameObject.Find("StageManager").GetComponent<StageManager>();
 
         //リジットボディ
         rb = GetComponent<Rigidbody>();
-
-        //当たり判定取得スクリプト
-        player_HurtBox = GetComponent<Player_HurtBox>();
 
         //アニメーター
         anim = GetComponent<Animator>();
@@ -92,8 +91,6 @@ public class Player_Controller : MonoBehaviour, IMovable, IDienable, PlayerUnit
         jumpKey = Input.GetKeyDown(KeyCode.Space);
         shootKey = Input.GetKeyDown(KeyCode.F);
         poseKey = Input.GetKeyDown(KeyCode.P);
-
-        Debug.Log(currentState + "です");
 
         switch (currentState)
         {
@@ -121,13 +118,13 @@ public class Player_Controller : MonoBehaviour, IMovable, IDienable, PlayerUnit
                 }
                 break;
 
-                //ジャンプ中は落下メソッド
+            //ジャンプ中は落下メソッド
             case State.Jump:
                 JumpDown();
                 break;
 
             case State.Shoot:
-                break;     
+                break;
         }
 
         //Pキーでポーズ
@@ -153,11 +150,6 @@ public class Player_Controller : MonoBehaviour, IMovable, IDienable, PlayerUnit
 
         //下方向に重力をかける
         Gravity();
-
-        if (player_HurtBox.isDeadCheck())
-        {
-            currentState = State.Dead;
-        }
     }
 
     /// <summary>
@@ -258,7 +250,7 @@ public class Player_Controller : MonoBehaviour, IMovable, IDienable, PlayerUnit
         Debug.Log(frisbeeHP);
 
         //フリスビーを生成
-        GameObject threwfrisbee = Instantiate(StageSelectManager.selectedFrisbee.SelectedFrisbee, new Vector3(transform.position.x, this.transform.position.y, this.transform.position.z + 2), Quaternion.Euler(new Vector3(90, 90, 0)));
+        GameObject threwfrisbee = Instantiate(GameManager.I.SelectedFrisbeeInfo.SelectedFrisbee, new Vector3(transform.position.x, this.transform.position.y, this.transform.position.z + 2), Quaternion.Euler(new Vector3(90, 90, 0)));
         threwfrisbee.GetComponent<Frisbee>().SetHP(frisbeeHP);
 
         //投げた時点でプレイヤーを停止させる
@@ -272,10 +264,15 @@ public class Player_Controller : MonoBehaviour, IMovable, IDienable, PlayerUnit
     }
 
 
-    public void TheDie(int type, Vector3 direction)
+    public void TheDie(Player_HurtBox.DeadType type, Vector3 direction)
     {
+        //吹っ飛ばす方向
         dieBlowDirection = direction;
+
+        //ステート変更
         currentState = State.Dead;
+
+        //コルーチン呼び出し
         StartCoroutine(Die(type));
     }
 
@@ -283,23 +280,29 @@ public class Player_Controller : MonoBehaviour, IMovable, IDienable, PlayerUnit
     /// プレイヤーが障害物、もしくは穴に落ちた際に呼ぶメソッド
     /// </summary>
     /// <returns></returns>
-    public IEnumerator Die(int type)
+    public IEnumerator Die(Player_HurtBox.DeadType type)
     {
         //死亡位置を記録
-        stageManager.deadPos = this.transform.position.z;
-
-        //アニメーション再生
-        PlayDieAnim(type);
+        var deadPos = this.transform.position.z;
 
         switch (type)
         {
             //穴に落下した場合
-            case 0:
+            case Player_HurtBox.DeadType.Fall:
 
+                //カメラを真上から下方向に投射し、穴に落ちているところが見えるようにする
+                cameraFollower.ZoomToTarget(-5, 0, new Vector3(0, -10, 0));
+
+                anim.Play("Unity_Chan_Die1");
                 break;
 
             //障害物に衝突した場合
-            case 1:
+            case Player_HurtBox.DeadType.Collide:
+                //振動させる
+                cameraFollower.Shake(0.3f, 1.0f);
+
+                anim.Play("Unity_Chan_Die2");
+
                 //速度をリセット
                 rb.velocity = Vector3.zero;
 
@@ -310,16 +313,13 @@ public class Player_Controller : MonoBehaviour, IMovable, IDienable, PlayerUnit
                 rb.AddForce(dieBlowDirection, ForceMode.Impulse);
 
                 //SE
-                SEManager.seManager.PlaySE(damageSEVol, damageSE);
+                SEManager.I.PlaySE(damageSEVol, damageSE);
                 break;
         }
 
 
         //ステージマネージャーのメソッドでリトライUIを呼び出す
-        stageManager.Retry();
-
-        //ステージマネージャーのメソッドでプレイヤーの操作を無効にする
-        stageManager.StopPlayerControll();
+        stageManager.Retry(deadPos);
 
         //ミスした後は一定時間後にゲーム時間を止める（リトライUIの背景が騒がしくなるのを防ぐ）
         yield return new WaitForSeconds(1.0f);
@@ -362,33 +362,18 @@ public class Player_Controller : MonoBehaviour, IMovable, IDienable, PlayerUnit
         anim.SetFloat("Speed", zMoveSpeed / 6);
     }
 
-    /// <summary>
-    /// ミスした際のアニメーション
-    /// 穴に落ちた際、障害物に衝突した際の２つ
-    /// これはプレイヤーの当たり判定を取得するスクリプトから呼び出す
-    /// </summary>
-    /// <param name="type"></param>
-    public void PlayDieAnim(int type)
-    {
-        switch (type)
-        {
-            //落下した際
-            case 0:
-                anim.Play("Unity_Chan_Die1");
-                break;
-
-            //障害物にあたった際
-            case 1:
-                anim.Play("Unity_Chan_Die2");
-                break;
-        }
-    }
-
     //コイン取得時のエフェクト
+    //ステージマネージャーのスコアを加算する
     //エフェクトはインスペクタから設定
-    public void PlayCoinEffect()
+    public void GetCoin(int score)
     {
-        SEManager.seManager.PlaySE(coinSEVol, coinSE);
+        //SE
+        SEManager.I.PlaySE(coinSEVol, coinSE);
+
+        //ポイント加算
+        stageManager.StorePoint(score);
+
+        //エフェクト
         coinEffect.Play();
     }
 
@@ -400,7 +385,7 @@ public class Player_Controller : MonoBehaviour, IMovable, IDienable, PlayerUnit
     public void LifeUP()
     {
         //SE
-        SEManager.seManager.PlaySE(lifeUPSEVol, lifeUP);
+        SEManager.I.PlaySE(lifeUPSEVol, lifeUP);
         isLifeUP = true;
 
         //エフェクト

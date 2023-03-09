@@ -1,67 +1,51 @@
-using System.Collections;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 
-
-//ゲーム内ポイントとロードの管理をする
-public class GameManager : MonoBehaviour
+public class GameManager : SingleTon<GameManager>
 {
-    [SerializeField]
-    private GameObject loadUIPrefab;
-
-    private AsyncOperation async;
-
-    //遷移先シーンの名前
-    private string nextSceneName;
-
-    public static GameManager gameManager = null;
-
     //ステージで取得したポイントを保持する
     //デバッグ用に[hide]にしないこと
-    public int point;
+    private int point;
 
-    private void Awake()
+    //ステージセレクトで選んだフリスビー
+    private FrisbeeItem selectedFrisbee;
+
+    //選択したステージ
+    private Stage selectedStage;
+
+
+    public int Point
     {
-        if (gameManager == null)
+        set
         {
-            gameManager = this;
-
-            //シーン間で削除が行われないようにする
-            DontDestroyOnLoad(this.gameObject);
+            point = value;
         }
-        else
+        get
         {
-            Destroy(this.gameObject);
+            return point;
         }
     }
 
-    public void NextScene(string sceneName)
+    public FrisbeeItem SelectedFrisbeeInfo
     {
-        //読み込み中はロードUIを出す
-        GameObject loadUI = Instantiate(loadUIPrefab);
-
-        loadUI.transform.SetParent(GameObject.Find("Canvas").transform);
-
-        loadUI.transform.localPosition = new Vector3(0, 0, 0);
-        loadUI.transform.localScale = new Vector3(1, 1, 1);
-
-        nextSceneName = sceneName;
-        
-        //　コルーチンを開始
-        StartCoroutine("LoadData");
+        set
+        {
+            selectedFrisbee = value;
+        }
+        get
+        {
+            return selectedFrisbee;
+        }
     }
 
-    private IEnumerator LoadData()
+    public Stage SelectedStageInfo
     {
-        // シーンの読み込みをする
-        async = SceneManager.LoadSceneAsync(nextSceneName);
-
-        //読み込み終わりまで待つ
-        while (!async.isDone)
+        set
         {
-            yield return null;
+            selectedStage = value;
         }
-
-        async.allowSceneActivation = true;
+        get
+        {
+            return selectedStage;
+        }
     }
 }

@@ -132,7 +132,7 @@ public class Enemy_AirShip : MonoBehaviour, IMovable
 
     private void Start()
     {
-        flySource.volume *= (SEManager.seManager.seVol);
+        flySource.volume *= (SEManager.I.seVol);
 
         //ステートは通常攻撃にしておく
         state = State.NormalAttack;
@@ -318,7 +318,7 @@ public class Enemy_AirShip : MonoBehaviour, IMovable
     //通常攻撃
     private void Attack()
     {
-        SEManager.seManager.PlaySE(normalAttackSEVol, normalAttackSE);
+        SEManager.I.PlaySE(normalAttackSEVol, normalAttackSE);
 
         //攻撃と同時にタイマーリセット
         rockOnTimer = 0.0f;
@@ -344,7 +344,7 @@ public class Enemy_AirShip : MonoBehaviour, IMovable
     //チャージ攻撃
     private void ChargeAttack()
     {
-        SEManager.seManager.PlaySE(chargeSEVol, chargeSE);
+        SEManager.I.PlaySE(chargeSEVol, chargeSE);
 
         anim.SetTrigger("ChargeAttack");
 
@@ -399,13 +399,13 @@ public class Enemy_AirShip : MonoBehaviour, IMovable
     //レーザSE
     private void PlayLeserSE()
     {
-        SEManager.seManager.PlaySE(leserSEVol, leserSE);
+        SEManager.I.PlaySE(leserSEVol, leserSE);
     }
 
     //ボム攻撃
     private void BombAttack()
     {
-        SEManager.seManager.PlaySE(bombInstalledSEVol, bombInstalledSE);
+        SEManager.I.PlaySE(bombInstalledSEVol, bombInstalledSE);
 
         //ボムを生成、フリスビーの位置と残存時間を渡す
         GameObject bomb = Instantiate(limitBomb, bombWeapon.transform.position, Quaternion.identity);

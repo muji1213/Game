@@ -52,6 +52,6 @@ public class RockOnUI : MonoBehaviour
     //アニメーションイベントで呼ぶ
     public void PlayRockOnSE()
     {
-        SEManager.seManager.PlaySE(rockOnSEVol,rockOnSE);
+        SEManager.I.PlaySE(rockOnSEVol,rockOnSE);
     }
 }

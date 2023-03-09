@@ -2,7 +2,7 @@ using UnityEngine;
 using UnityEngine.UI;
 
 
-public class InstructionManager : SceneChanger
+public class Instruction : MonoBehaviour
 {
     [Header("整列用パネル")] [SerializeField] GameObject panel;
     [Header("パネルの大きさ")] [SerializeField] float panelWidth;
@@ -10,6 +10,8 @@ public class InstructionManager : SceneChanger
     [Header("右に移動するボタン")] [SerializeField] GameObject goNextButton;
 
     [Header("BGM")] [SerializeField] AudioClip bgm;
+    [Header("戻るボタン押下SE")] [SerializeField] AudioClip inputSE;
+    [Header("戻るボタン押下SEの音量")] [SerializeField] [Range(0, 1)] int inputSEVol = 1;
     [Header("左右ボタン押下SE")] [SerializeField] AudioClip buttonSE;
     [Header("左右ボタンSEの音量")] [SerializeField] [Range(0, 1)] float buttonSEVol = 1;
 
@@ -31,7 +33,7 @@ public class InstructionManager : SceneChanger
     private void Start()
     {
         //BGM
-        BGMManager.bgmManager.PlayBgm(bgm);
+        BGMManager.I.PlayBgm(bgm);
 
         //パネル数を数える
         panelNum = panel.transform.childCount;
@@ -97,7 +99,7 @@ public class InstructionManager : SceneChanger
         else
         {
             //SE
-            SEManager.seManager.PlaySE(buttonSEVol, buttonSE);
+            SEManager.I.PlaySE(buttonSEVol, buttonSE);
 
             //目標座標を設定する
             nextPanelPosX = currentPanelPosX - (panelWidth + celWidth);
@@ -123,10 +125,17 @@ public class InstructionManager : SceneChanger
         else
         {
             //SE
-            SEManager.seManager.PlaySE(buttonSEVol, buttonSE);
+            SEManager.I.PlaySE(buttonSEVol, buttonSE);
 
             //目標座標を設定
             nextPanelPosX = currentPanelPosX + (panelWidth + celWidth);
         }
+    }
+
+    //タイトルシーンへ
+    public void ToTitleScene()
+    {
+        SEManager.I.PlaySE(inputSEVol, inputSE);
+        SceneChanger.I.ToTitleScene();
     }
 }

@@ -1,13 +1,13 @@
 using UnityEngine;
 
 //フェードイン
-public class Fade : MonoBehaviour
+public class FadeUI : MonoBehaviour
 {
     //アニメーター
     private Animator anim;
 
-    //フェードが終わったかどうか
-    [HideInInspector] public bool isAnimEnd = false;
+    //フェードが終わっているか
+    private bool isAnimEnd = false;
     
     void Start()
     {
@@ -28,7 +28,19 @@ public class Fade : MonoBehaviour
             isAnimEnd = true;
 
             //フェードを消す
-            Destroy(this.gameObject);
+            this.gameObject.SetActive(false);
+        }
+    }
+
+    public bool IsFadeEnd
+    {
+        private set
+        {
+            isAnimEnd = value;
+        }
+        get
+        {
+            return isAnimEnd;
         }
     }
 
