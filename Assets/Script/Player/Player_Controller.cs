@@ -15,6 +15,7 @@ public class Player_Controller : MonoBehaviour, IMovable, IDienable<Player_HurtB
     }
 
     //変数
+    [Header("パラメータ")]
     [Header("奥移動速度")] [SerializeField] float zMoveSpeed;
     [Header("横移動速度")] [SerializeField] float xMoveSpeed;
     [Header("ジャンプ高度")] [SerializeField] float jumpSpeed;
@@ -22,7 +23,12 @@ public class Player_Controller : MonoBehaviour, IMovable, IDienable<Player_HurtB
     [Header("死亡時の吹っ飛びの強さ")] [SerializeField] float dieBlowPow;
     [Header("フリスビー")] [SerializeField] GameObject frisbee;
     [Header("プレイヤーの加速度")] [SerializeField] AnimationCurve runCurve;
+    [Header("どれくらい走れば最大HPになるか")] [SerializeField] public int MaxHPTime;
     [Header("接地判定チェック")] [SerializeField] GroundChecker groundChecker;
+
+    [Header("エフェクト")]
+    [Header("ジャンプのSE")] [SerializeField] AudioClip jumpSE;
+    [Header("ジャンプSEの音量")] [SerializeField] [Range(0, 1)] float jumpSEVol = 1; 
     [Header("ダメージ受けた時のSE")] [SerializeField] AudioClip damageSE;
     [Header("ダメージSEの音量")] [SerializeField] [Range(0, 1)] float damageSEVol = 1;
     [Header("コイン取得時のエフェクト")] [SerializeField] ParticleSystem coinEffect;
@@ -31,8 +37,7 @@ public class Player_Controller : MonoBehaviour, IMovable, IDienable<Player_HurtB
     [Header("ライフアップSE")] [SerializeField] AudioClip lifeUP;
     [Header("ライフアップSEの音量")] [SerializeField] [Range(0, 1)] float lifeUPSEVol = 1;
     [Header("ライフアップエフェクト")] [SerializeField] ParticleSystem lifeUPEffect;
-    [Header("どれくらい走れば最大HPになるか")] [SerializeField] public int MaxHPTime;
-
+   
     //X速度
     private float xSpeed;
 
@@ -198,6 +203,9 @@ public class Player_Controller : MonoBehaviour, IMovable, IDienable<Player_HurtB
         //接地しているかつジャンプキーが押された
         if (isGround)
         {
+            //SE
+            SEManager.I.PlaySE(jumpSEVol, jumpSE);
+
             //ステートを変更
             currentState = State.Jump;
 
@@ -246,8 +254,6 @@ public class Player_Controller : MonoBehaviour, IMovable, IDienable<Player_HurtB
 
         //UIを表示
         stageManager.SetUIAndLife(frisbeeHP, isLifeUP);
-
-        Debug.Log(frisbeeHP);
 
         //フリスビーを生成
         GameObject threwfrisbee = Instantiate(GameManager.I.SelectedFrisbeeInfo.SelectedFrisbee, new Vector3(transform.position.x, this.transform.position.y, this.transform.position.z + 2), Quaternion.Euler(new Vector3(90, 90, 0)));

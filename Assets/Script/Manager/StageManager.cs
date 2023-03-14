@@ -193,13 +193,10 @@ public class StageManager : MonoBehaviour
     /// <summary>
     /// フリスビーが障害物に衝突時、ライフUIを減らし、ノーダメージフラグはfalseに
     /// </summary>
-    public void TakeDamage()
+    public void FrisbeeDamaged()
     {
         //UIのハートを一個減らす
         uiManager.ReduceHPUI();
-
-        //振動させる
-        cameraFollower.Shake(0.3f, 1.0f);
 
         //ノーダメージフラグはOFFに
         if (isNodamage)

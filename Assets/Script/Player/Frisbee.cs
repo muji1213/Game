@@ -558,7 +558,7 @@ public class Frisbee : MonoBehaviour, IMovable, IRoatatable, FrisbeeUnit, IDiena
             }
 
             //zspeed‚©‚çŒ¸Z‚·‚é
-            //‰¿‚Ì‚‚¢•û‚©‚çŒ¸Z‚µ‚Ä‚¢‚­‚½‚ßA‹}‘¬‚É‘¬“x‚ª—‚¿‚é‚æ‚¤‚É‚µ‚Ä‚¢‚é
+            //’l‚Ì‚‚¢•û‚©‚çŒ¸Z‚µ‚Ä‚¢‚­‚½‚ßA‹}‘¬‚É‘¬“x‚ª—‚¿‚é‚æ‚¤‚É‚µ‚Ä‚¢‚é
             zSpeed -= acceleteCurve.Evaluate(acceleteTime);
         }
 
@@ -609,6 +609,9 @@ public class Frisbee : MonoBehaviour, IMovable, IRoatatable, FrisbeeUnit, IDiena
                 yield return new WaitForSecondsRealtime(0.5f);
 
                 Time.timeScale = 1.0f;
+
+                //U“®‚³‚¹‚é
+                cameraFollower.Shake(0.3f, 1.0f);
 
                 break;
 
@@ -679,8 +682,14 @@ public class Frisbee : MonoBehaviour, IMovable, IRoatatable, FrisbeeUnit, IDiena
         //HP‚ğŒ¸‚ç‚·
         HP -= 1;
 
+        if(HP > 0)
+        {
+            //U“®‚³‚¹‚é
+            cameraFollower.Shake(0.3f, 1.0f);
+        }
+       
         //UI‚Ìƒn[ƒg‚àŒ¸‚ç‚·
-        stageManager.TakeDamage();
+        stageManager.FrisbeeDamaged();
     }
 
     /// <summary>
