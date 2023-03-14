@@ -19,10 +19,13 @@ public class Frisbee : MonoBehaviour, IMovable, IRoatatable, FrisbeeUnit, IDiena
         Dead
     }
 
+    [Header("パラメータ")]
     [Header("縦横移動速度")] [SerializeField] float speed; //縦横移動速度
     [Header("方向転換時の減速速度")] [SerializeField] float brake; //ブレーキ
     [Header("無入力時の最低速度")] [SerializeField] float deceleration; // 無入力時の最低速度
     [Header("無入力時の減速速度")] [SerializeField] float decelerationMutply; //無入力時の減速速度
+    [Header("X最大速度")] [SerializeField] float maxXspeed;
+    [Header("Y最大速度")] [SerializeField] float maxYspeed;
     [Header("縦横移動の加速度")] [SerializeField] AnimationCurve forceCurve; //加速度
     [Header("奥移動速度")] [SerializeField] float zSpeed; //奥移動速度
     [Header("奥移動最大速度")] [SerializeField] float maxZspeed; //奥移動最大速度
@@ -32,6 +35,8 @@ public class Frisbee : MonoBehaviour, IMovable, IRoatatable, FrisbeeUnit, IDiena
     [Header("無敵時間")] [SerializeField] float invincibleTime; //無敵時間
     [Header("無敵時間中の点滅間隔")] [SerializeField] float blinkInterval; //無敵時間中の点滅間隔
     [SerializeField] AnimationCurve acceleteCurve; //加速ボタンを押した際のフリスビーの速度
+
+    [Header("エフェクト")]
     [Header("ダメージ受けた時のSE")] [SerializeField] AudioClip damageSE;
     [Header("ダメージSEの音量")] [SerializeField] [Range(0, 1)] float damageSEVol = 1;
     [Header("ダメージ受けた時のエフェクト")] [SerializeField] GameObject damageEffect;
@@ -40,7 +45,6 @@ public class Frisbee : MonoBehaviour, IMovable, IRoatatable, FrisbeeUnit, IDiena
     [Header("コイン取得SEの音量")] [SerializeField] [Range(0, 1)] float coinSEVol = 1;
     [Header("投げた時のSE")] [SerializeField] AudioClip throwSE;
     [Header("投げた時のSEの音量")] [SerializeField] [Range(0, 1)] float throwSEVol = 1;
-    [Header("効果音用のオーディオソース")] [SerializeField] AudioSource seAudioSource;
 
     private int HP; //HP
     private float moveTime; //停止、もしくは方向転換してからの経過時間
@@ -183,6 +187,27 @@ public class Frisbee : MonoBehaviour, IMovable, IRoatatable, FrisbeeUnit, IDiena
         {
             rb.velocity = new Vector3(rb.velocity.x, rb.velocity.y, zSpeed);
 
+            //X速度が最大値を超えていた場合、X最大速度にする
+            if (rb.velocity.x > maxXspeed)
+            {
+                rb.velocity = new Vector3(maxXspeed, rb.velocity.y, zSpeed);
+            }
+            else if (rb.velocity.x < -maxXspeed)
+            {
+                rb.velocity = new Vector3(-maxXspeed, rb.velocity.y, zSpeed);
+            }
+
+            //Y速度が最大値を超えていた場合、Y最大速度にする
+            if (rb.velocity.y > maxYspeed)
+            {
+                rb.velocity = new Vector3(rb.velocity.x, maxYspeed, zSpeed);
+            }
+            else if (rb.velocity.y < -maxYspeed)
+            {
+                rb.velocity = new Vector3(rb.velocity.x, -maxYspeed, zSpeed);
+            }
+   
+           
             //各種メソッド
             Move();
             Rotate();

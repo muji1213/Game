@@ -2316,6 +2316,7 @@ MonoBehaviour:
   xMoveSpeed: 0
   jumpSpeed: 400
   gravity: 30
+  dieBlowPow: 2.5
   frisbee: {fileID: 3270074514040271237, guid: 88f6bf9b4b9f9a54aa16ea7eca37f87e, type: 3}
   runCurve:
     serializedVersion: 2
@@ -2344,6 +2345,7 @@ MonoBehaviour:
   groundChecker: {fileID: 6753383680953964505}
   damageSE: {fileID: 8300000, guid: 4d9c814026e00fa4bb2d7430de358d18, type: 3}
   damageSEVol: 1
+  damageEffect: {fileID: 604798888116457931, guid: 98f977e4c19aa4c9a854ffbb6e3d9a4f, type: 3}
   coinEffect: {fileID: 6149269439049103754}
   coinSE: {fileID: 8300000, guid: 463c76b0f4528664c949069684bce115, type: 3}
   coinSEVol: 1

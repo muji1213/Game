@@ -19,12 +19,12 @@ public class Player_Controller : MonoBehaviour, IMovable, IDienable<Player_HurtB
     [Header("横移動速度")] [SerializeField] float xMoveSpeed;
     [Header("ジャンプ高度")] [SerializeField] float jumpSpeed;
     [Header("重力")] [SerializeField] float gravity;
+    [Header("死亡時の吹っ飛びの強さ")] [SerializeField] float dieBlowPow;
     [Header("フリスビー")] [SerializeField] GameObject frisbee;
     [Header("プレイヤーの加速度")] [SerializeField] AnimationCurve runCurve;
     [Header("接地判定チェック")] [SerializeField] GroundChecker groundChecker;
     [Header("ダメージ受けた時のSE")] [SerializeField] AudioClip damageSE;
     [Header("ダメージSEの音量")] [SerializeField] [Range(0, 1)] float damageSEVol = 1;
-    [Header("ダメージ受けた時のエフェクト")] ParticleSystem damageEffect;
     [Header("コイン取得時のエフェクト")] [SerializeField] ParticleSystem coinEffect;
     [Header("コイン取得時のSE")] [SerializeField] AudioClip coinSE;
     [Header("コインSEの音量")] [SerializeField] [Range(0, 1)] float coinSEVol = 1;
@@ -310,7 +310,7 @@ public class Player_Controller : MonoBehaviour, IMovable, IDienable<Player_HurtB
                 rb.useGravity = true;
 
                 //障害物から自分にかけてのベクトル(direction)に力を加える
-                rb.AddForce(dieBlowDirection, ForceMode.Impulse);
+                rb.AddForce(dieBlowDirection * dieBlowPow, ForceMode.Impulse);
 
                 //SE
                 SEManager.I.PlaySE(damageSEVol, damageSE);

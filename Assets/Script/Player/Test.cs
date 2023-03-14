@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class Test : MonoBehaviour
 {
+    [Header("X最大速度")] [SerializeField] float maxXspeed;
+    [Header("Y最大速度")] [SerializeField] float maxYspeed;
     public float speed;
     public float breakForce;
     public float deceleration;
@@ -30,6 +32,26 @@ public class Test : MonoBehaviour
         left = Input.GetKey(KeyCode.LeftArrow);
         up = Input.GetKey(KeyCode.UpArrow);
         down = Input.GetKey(KeyCode.DownArrow);
+
+        //X速度が最大値を超えていた場合、X最大速度にする
+        if (rb.velocity.x > maxXspeed)
+        {
+            rb.velocity = new Vector3(maxXspeed, rb.velocity.y, 0);
+        }
+        else if (rb.velocity.x < -maxXspeed)
+        {
+            rb.velocity = new Vector3(-maxXspeed, rb.velocity.y, 0);
+        }
+
+        //Y速度が最大値を超えていた場合、Y最大速度にする
+        if (rb.velocity.y > maxYspeed)
+        {
+            rb.velocity = new Vector3(rb.velocity.x, maxYspeed, 0);
+        }
+        else if (rb.velocity.y < -maxYspeed)
+        {
+            rb.velocity = new Vector3(rb.velocity.x, -maxYspeed, 0);
+        }
     }
 
     private void FixedUpdate()

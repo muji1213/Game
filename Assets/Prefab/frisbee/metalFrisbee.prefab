@@ -137,6 +137,8 @@ MonoBehaviour:
   brake: 3
   deceleration: 0.6
   decelerationMutply: 30
+  maxXspeed: 6
+  maxYspeed: 6
   forceCurve:
     serializedVersion: 2
     m_Curve:
@@ -200,7 +202,6 @@ MonoBehaviour:
   coinSEVol: 1
   throwSE: {fileID: 8300000, guid: 390f5aca4c885814497b17253a1ddcc2, type: 3}
   throwSEVol: 1
-  seAudioSource: {fileID: -6396770823169987372}
   isBlowed: 0
 --- !u!82 &1003354130524067227
 AudioSource:

@@ -377,6 +377,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b8652994f08688a45916083ff9a7c515, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  maxXspeed: 0
+  maxYspeed: 0
   speed: 10
   breakForce: 20
   deceleration: 0.1
@@ -693,6 +695,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b8652994f08688a45916083ff9a7c515, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  maxXspeed: 3
+  maxYspeed: 3
   speed: 8
   breakForce: 2
   deceleration: 1
@@ -848,6 +852,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b8652994f08688a45916083ff9a7c515, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  maxXspeed: 0
+  maxYspeed: 0
   speed: 40
   breakForce: 10
   deceleration: 0.5
