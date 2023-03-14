@@ -29,7 +29,7 @@ public class ItemManager : SingleTon<ItemManager>
             items.Add(1, new FrisbeeItem(1, 1, "MetalFrisbee", 2100, Resources.Load<Sprite>("MetalFrisbeeSprite"),
               "とてもオモいフリスビー、カゼにふきとばされにくい", Frisbees[1], false));
 
-            items.Add(2, new FrisbeeItem(2, 2, "クナイフリスビー", 4100, Resources.Load<Sprite>("KunaiSprite"), "ニンジャのフリスビー。Aキーでスガタをケせる", Frisbees[2], false));
+            items.Add(2, new FrisbeeItem(2, 2, "クナイフリスビー", 5000, Resources.Load<Sprite>("KunaiSprite"), "ニンジャのフリスビー。Aキーでスガタをケせる", Frisbees[2], false));
 
             isInitialized = true;
         }

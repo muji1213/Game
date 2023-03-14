@@ -4,12 +4,19 @@ using Cinemachine;
 public class Enemy_AirShip : MonoBehaviour, IMovable
 {
     [HideInInspector]
-    public enum State
+    private enum AttackType
     {
         NormalAttack,
         ChargeAttack,
         BombAttack,
-        Dead
+    }
+
+    public enum State
+    {
+        Idle,
+        Start,
+        Middle,
+        End
     }
 
     [SerializeField] [Header("フリスビーの侵入判定")] BossTrigger checkFrisbee;
@@ -34,22 +41,14 @@ public class Enemy_AirShip : MonoBehaviour, IMovable
     Rigidbody frisbeeRb;
 
     //ステート
-    public State state;
+    private AttackType attackType;
+    public State currentState;
 
     //アニメーター
     [SerializeField] [Header("アニメーター")] private Animator anim;
 
     //登場時のスピード
     [SerializeField] [Header("ボストリガーを踏んでから規定位置に到着するまでのスピード")] private float startSpeed;
-
-    //開始位置についたか
-    private bool isStart = false;
-
-    //中間位置についたか
-    private bool isMiddle = false;
-
-    //終了位置についたか
-    private bool isEnd = false;
 
     //フリスビーのゲームオブジェクト
     private GameObject frisbee;
@@ -134,8 +133,11 @@ public class Enemy_AirShip : MonoBehaviour, IMovable
     {
         flySource.volume *= (SEManager.I.seVol);
 
-        //ステートは通常攻撃にしておく
-        state = State.NormalAttack;
+        //攻撃タイプは通常攻撃にしておく
+        attackType = AttackType.NormalAttack;
+
+        //ステートはIdle
+        currentState = State.Idle;
 
         //初回に溜め攻撃をしないよう、1から始める
         attackNum = 1;
@@ -153,13 +155,13 @@ public class Enemy_AirShip : MonoBehaviour, IMovable
 
         Move();
 
-
-        if (isStart && !isEnd)
+        //攻撃態勢の時
+        if (currentState == State.Start || currentState == State.Middle)
         {
             //フリスビーが墜落した場合、攻撃停止する
             if (frisbee.GetComponent<Frisbee>().GetHP == 0)
             {
-                isEnd = true;
+                currentState = State.End;
             }
 
             //スピードを常にフリスビーを同じにする
@@ -169,30 +171,30 @@ public class Enemy_AirShip : MonoBehaviour, IMovable
             if (attackNum % chargeAttackNum == 0 && attackNum % bombAttackNum == 0)
             {
                 //ボム優先               
-                state = State.BombAttack;
+                attackType = AttackType.BombAttack;
             }
 
             //攻撃回数がボム攻撃回数になったら
             else if (attackNum % bombAttackNum == 0)
             {
                 //ボム攻撃状態に
-                state = State.BombAttack;
+                attackType = AttackType.BombAttack;
             }
             else if (attackNum % chargeAttackNum == 0)
             {
                 //チャージ攻撃状態にする
-                state = State.ChargeAttack;
+                attackType = AttackType.ChargeAttack;
             }
             else
             {
                 //それ以外は通常攻撃
-                state = State.NormalAttack;
+                attackType = AttackType.NormalAttack;
             }
 
-            switch (state)
+            switch (attackType)
             {
                 //ボム攻撃
-                case State.BombAttack:
+                case AttackType.BombAttack:
 
                     //ボム後の攻撃を行わない時間を過ぎたら
                     if (bombAttackCoolTimer >= bombAttackCoolTime)
@@ -213,7 +215,7 @@ public class Enemy_AirShip : MonoBehaviour, IMovable
                     break;
 
                 //チャージ攻撃
-                case State.ChargeAttack:
+                case AttackType.ChargeAttack:
 
                     //チャージ攻撃時間を過ぎたら
                     if (chargeAttackTimer >= chargeAttackTime)
@@ -234,13 +236,13 @@ public class Enemy_AirShip : MonoBehaviour, IMovable
                     break;
 
                 //通常攻撃
-                case State.NormalAttack:
+                case AttackType.NormalAttack:
 
                     //ロックオンタイマーを進める
                     rockOnTimer += Time.deltaTime;
 
                     //中間を到達していたら射撃速度が上昇する
-                    if (isMiddle)
+                    if (currentState == State.Middle)
                     {
                         rockOnTimer += Time.deltaTime;
                     }
@@ -263,36 +265,34 @@ public class Enemy_AirShip : MonoBehaviour, IMovable
     public void Move()
     {
         //フリスビーを感知したら移動する
-        if (checkFrisbee.CheckEnterFrisbee() && isStart == false)
+        if (checkFrisbee.CheckEnterFrisbee() && currentState == State.Idle)
         {
             flySource.Play();
             dollyCart.m_Speed = startSpeed;
+
+            //フリスビーを取得
+            frisbee = GameObject.FindWithTag("Frisbee");
+            frisbeeRb = frisbee.GetComponent<Rigidbody>();
         }
 
         //スタート位置についたらパスを変更
         if (dollyCart.m_Position == startPath.PathLength && Mathf.Abs(this.transform.position.z - GameObject.FindWithTag("Frisbee").transform.position.z) < 20f)
         {
-            //フリスビーのリジットボディを取得
-            frisbeeRb = GameObject.FindWithTag("Frisbee").GetComponent<Rigidbody>();
-
             //フラグをおろす
-            isStart = true;
+            currentState = State.Start;
 
             //パスを変更
             dollyCart.m_Path = movePath;
 
             //パスの初期位置に移動する
-            dollyCart.m_Position = movePath.PathLength;
-
-            frisbee = GameObject.FindWithTag("Frisbee");
+            dollyCart.m_Position = movePath.PathLength;          
         }
 
         //終了位置についたら
-        if (dollyCart.m_Path == movePath && isEnd)
+        if (dollyCart.m_Path == movePath && currentState == State.End)
         {
             rockOnUI.SetActive(false);
             dollyCart.m_Speed = -frisbeeRb.velocity.z;
-            state = State.Dead;
         }
 
         //パスの最終地点まで行ったら非アクティブに
@@ -300,7 +300,6 @@ public class Enemy_AirShip : MonoBehaviour, IMovable
         {
             this.gameObject.SetActive(false);
         }
-
     }
 
     //ロックオン中、照準を表示する
@@ -370,7 +369,7 @@ public class Enemy_AirShip : MonoBehaviour, IMovable
 
 
         //中間地点を超えた場合、射出場所が増える
-        if (isMiddle)
+        if (currentState == State.Middle)
         {
             //チャージ攻撃オブジェクトを、武器3から生成
             GameObject leser3 = Instantiate(bullet_Charge, weapon3.transform.position, Quaternion.identity);
@@ -420,7 +419,7 @@ public class Enemy_AirShip : MonoBehaviour, IMovable
     private void SetAnim()
     {
         //宇宙船のアニメーション
-        anim.SetBool("isStart", isStart);
+        anim.SetBool("isStart", currentState == State.Start);
     }
 
     //照準のアニメーション
@@ -436,20 +435,20 @@ public class Enemy_AirShip : MonoBehaviour, IMovable
         //終了判定、以降攻撃を行わない
         if (other.CompareTag("End"))
         {
-            isEnd = true;
+            currentState = State.End;
             smoke.Play();
         }
 
         //中間地点、攻撃速度が上昇する
         if (other.CompareTag("Middle"))
         {
-            isMiddle = true;
+            currentState = State.Middle;
         }
     }
 
     //ステートを返す
     public State GetState()
     {
-        return state;
+        return currentState;
     }
 }

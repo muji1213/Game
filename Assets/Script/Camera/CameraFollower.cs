@@ -25,7 +25,7 @@ public class CameraFollower : MonoBehaviour
     [SerializeField] GameObject finishCamera;
 
     //ゴールのゲームオブジェクト
-    public GameObject target;
+    [SerializeField]private GameObject player;
 
     //対象に近づくまでの時間
     [SerializeField, Range(0.01f, 1.0f)] private float _positionLerpSpeed = 0.1f;
@@ -66,7 +66,7 @@ public class CameraFollower : MonoBehaviour
 
             //対象の位置への移動
             //posTo：追従の対象
-            Vector3 posTo = target.transform.position + transform.up * _distanceUpwards + transform.forward * _distanceForwards;
+            Vector3 posTo = player.transform.position + transform.up * _distanceUpwards + transform.forward * _distanceForwards;
 
             //現在位置からposToへ近づく
             transform.position = Vector3.Slerp(transform.position, posTo, posSpeed);
@@ -83,7 +83,7 @@ public class CameraFollower : MonoBehaviour
         else
         {
             //フリスビーが開始位置についたら位置を固定する
-            this.transform.position = new Vector3(this.transform.position.x, this.transform.position.y, target.transform.position.z + _distanceForwards - 3);
+            this.transform.position = new Vector3(this.transform.position.x, this.transform.position.y, player.transform.position.z + _distanceForwards - 3);
         }
     }
 
@@ -91,7 +91,7 @@ public class CameraFollower : MonoBehaviour
     //最初はUnityちゃんに追従し、フリスビーを投げた瞬間に、フリスビーにターゲットを変更
     public void ChangeTarget(GameObject newTarget)
     {
-        target = newTarget;
+        player = newTarget;
     }
 
     //カメラの位置を対象へ移動する
@@ -109,7 +109,7 @@ public class CameraFollower : MonoBehaviour
     public void FixCamera(GameObject StartPos)
     {
         this.transform.position = new Vector3(StartPos.transform.position.x, StartPos.transform.position.y,
-                                                target.transform.position.z + _distanceForwards - 3);
+                                                player.transform.position.z + _distanceForwards - 3);
 
         //開始ステートに
         state = State.FrisbeePhase;
@@ -146,7 +146,7 @@ public class CameraFollower : MonoBehaviour
             var y = pos.y + Random.Range(-2f, 2f) * magnitude * (1 - (elapsed / duration));
 
             //それぞれ位置を適用
-            transform.localPosition = new Vector3(x, y, target.transform.position.z + _distanceForwards - 3);
+            transform.localPosition = new Vector3(x, y, player.transform.position.z + _distanceForwards - 3);
             elapsed += Time.deltaTime;
 
             yield return new WaitForSeconds(Time.deltaTime / 60);

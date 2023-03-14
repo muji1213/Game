@@ -17,7 +17,7 @@ public class StageEnterCamera : MonoBehaviour
     private CameraFollower cameraFollower;
 
     //ムービーを切り上げる値(Lerpのためpositionが0にならない)
-    [Header("パスを切り上げる距離")] [SerializeField] [Range(0.1f, 10)] private float per;
+    [Header("パスを切り上げる距離")] [SerializeField] [Range(0.8f, 1.0f)] private float per;
 
     private void Awake()
     {
@@ -27,7 +27,7 @@ public class StageEnterCamera : MonoBehaviour
         dollyCart = this.GetComponent<CinemachineDollyCart>();
 
         //初回入場済みか調べる
-        if (StageSelectManager.I.isStageEntered(GameManager.I.SelectedStageInfo.StageNum))
+        if (StageSelectManager.I.IsStageEntered(GameManager.I.SelectedStageInfo.StageNum))
         {
             //入場済みならすぐに開始する
             dollyCart.m_Position = 0;
@@ -47,6 +47,12 @@ public class StageEnterCamera : MonoBehaviour
 
     void Update()
     {
+       //パスの進み具合
+       //0が初期位置、1ならパスの最終地点
+        var progress = 1 - (dollyCart.m_Position / path.PathLength);
+
+        Debug.Log(progress);
+
         //スタートフラグが降りてないなら何もしない
         if (!isStart)
         {
@@ -54,7 +60,7 @@ public class StageEnterCamera : MonoBehaviour
         }
 
         //パスの一定割合まで進んだら切り上げる(Lerpは0にならない)
-        if (dollyCart.m_Position <= per)
+        if (progress >= per)
         {
             dollyCart.m_Path = null;
 
@@ -65,7 +71,7 @@ public class StageEnterCamera : MonoBehaviour
             StageSelectManager.I.ActiveStageEnteredFlag(GameManager.I.SelectedStageInfo.StageNum);
             return;
         }
-        else if (dollyCart.m_Position <= path.PathLength)
+        else if (progress < per)
         {
             //パスを辿る（徐々に速度を落とす）
             dollyCart.m_Position = Mathf.Lerp(dollyCart.m_Position, 0, speed * Time.deltaTime);

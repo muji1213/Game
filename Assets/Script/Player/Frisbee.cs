@@ -19,6 +19,32 @@ public class Frisbee : MonoBehaviour, IMovable, IRoatatable, FrisbeeUnit, IDiena
         Dead
     }
 
+    //ステージマネージャー
+    public StageManager StageManager
+    {
+        set
+        {
+            stageManager = value;
+        }
+        private get
+        {
+            return stageManager;
+        }
+    }
+
+    //カメラフォロワー
+    public CameraFollower CameraFollower
+    {
+        set
+        {
+            cameraFollower = value;
+        }
+        private get
+        {
+            return cameraFollower;
+        }
+    }
+
     [Header("パラメータ")]
     [Header("縦横移動速度")] [SerializeField] float speed; //縦横移動速度
     [Header("方向転換時の減速速度")] [SerializeField] float brake; //ブレーキ
@@ -89,10 +115,6 @@ public class Frisbee : MonoBehaviour, IMovable, IRoatatable, FrisbeeUnit, IDiena
     void Start()
     {
         //コンポーネント取得
-
-        //ステージマネージャー
-        stageManager = GameObject.Find("StageManager").GetComponent<StageManager>();
-
         //リジットボディ
         rb = GetComponent<Rigidbody>();
 
@@ -109,9 +131,6 @@ public class Frisbee : MonoBehaviour, IMovable, IRoatatable, FrisbeeUnit, IDiena
 
         //最小z移動速度
         minZspeed = zSpeed;
-
-        //カメラ追従用のスクリプト
-        cameraFollower = GameObject.Find("Main Camera").GetComponent<CameraFollower>();
 
         //カメラの追従対象をUnityちゃんからフリスビーに変える
         cameraFollower.ChangeTarget(this.gameObject);
@@ -206,8 +225,8 @@ public class Frisbee : MonoBehaviour, IMovable, IRoatatable, FrisbeeUnit, IDiena
             {
                 rb.velocity = new Vector3(rb.velocity.x, -maxYspeed, zSpeed);
             }
-   
-           
+
+
             //各種メソッド
             Move();
             Rotate();
@@ -682,12 +701,12 @@ public class Frisbee : MonoBehaviour, IMovable, IRoatatable, FrisbeeUnit, IDiena
         //HPを減らす
         HP -= 1;
 
-        if(HP > 0)
+        if (HP > 0)
         {
             //振動させる
             cameraFollower.Shake(0.3f, 1.0f);
         }
-       
+
         //UIのハートも減らす
         stageManager.FrisbeeDamaged();
     }

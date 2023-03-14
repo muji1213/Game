@@ -31,6 +31,7 @@ public class LifeUI : MonoBehaviour
 
             //ˆÊ’u‚â‘å‚«‚³‚ğİ’è
             life.transform.localPosition = new Vector3(0, 0, 0);
+            life.transform.localRotation = new Quaternion(0, 0, 0, 0);
             life.transform.localScale = new Vector3(1, 1, 1);
         }
     }

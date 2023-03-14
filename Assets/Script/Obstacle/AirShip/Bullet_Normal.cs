@@ -11,10 +11,8 @@ public class Bullet_Normal : Bullet
     //飛んでいく方向
     Vector3 direction;
 
-    new void Start()
+    protected override void Init()
     {
-        base.Start();
-
         //フリスビーの方向を向く
         this.transform.LookAt(targetPos);
 

@@ -2,6 +2,12 @@ using UnityEngine;
 
 public class Bullet_Mine : Bullet
 {
+    private enum State
+    {
+        Idle,
+        Explosion
+    }
+
     //スフィアコライダー(HITBOX)
     private SphereCollider hitBox;
 
@@ -22,10 +28,8 @@ public class Bullet_Mine : Bullet
 
     GameObject frisbee;
 
-    new void Start()
+    protected override void Init()
     {
-        base.Start();
-
         audioSource = GetComponent<AudioSource>();
         audioSource.volume *= SEManager.I.seVol;
 

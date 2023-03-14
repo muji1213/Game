@@ -12,8 +12,8 @@ public class StageManager : MonoBehaviour
     [Header("HP満タンになるまで走った時の加算スコア")] [SerializeField] int maxHPAddPoint;
 
     [Header("カメラ関連")]
-    [Header("フィニッシュ演出用のカメラ")] [SerializeField] Camera finishCam;
-    [Header("ステージ入場カメラ")] [SerializeField] StageEnterCamera stageEnterCamera;
+    [Header("メインカメラ")] [SerializeField] Camera mainCamera;
+    [Header("フィニッシュ演出用のカメラ")] [SerializeField] Camera finishCamera;
     [Header("メインカメラに表示させるキャンバス")] [SerializeField] Canvas canvas;
     [Header("フィニッシュカメラに映すキャンバス")] [SerializeField] GameObject finishCanvas;
 
@@ -51,17 +51,15 @@ public class StageManager : MonoBehaviour
     //UIおよびプレイヤーの操作を有効にしたか
     private bool isStart = false;
 
-    //カメラ追従用のスクリプト
-    private CameraFollower cameraFollower;
-
-    //フィニッシュ演出用のカメラ
-    private FinishCamera finishCamera;
+    //スクリプト
+    CameraFollower cameraFollower;
+    StageEnterCamera stageEnterCamera;
 
     private void Start()
     {
-        //各種コンポーネント
-        cameraFollower = GameObject.Find("Main Camera").GetComponent<CameraFollower>();
-        finishCamera = GameObject.Find("Finish Camera").GetComponent<FinishCamera>();
+        //スクリプト取得
+        cameraFollower = mainCamera.GetComponent<CameraFollower>();
+        stageEnterCamera = mainCamera.GetComponent<StageEnterCamera>();
 
         //フィニッシュカメラに映すキャンバスは非表示に
         finishCanvas.SetActive(false);
@@ -205,6 +203,7 @@ public class StageManager : MonoBehaviour
         }
     }
 
+
     //フリスビーが的に当たった時の演出
     public IEnumerator Finish()
     {
@@ -218,7 +217,7 @@ public class StageManager : MonoBehaviour
         cameraFollower.ChangeFinishCamera();
 
         //振動させる
-        finishCamera.Shake(0.5f, 1.0f);
+        finishCamera.GetComponent<FinishCamera>().Shake(0.5f, 1.0f);
 
         //一定時間止める（画面振動はする）
         Time.timeScale = 0.0f;
@@ -335,7 +334,7 @@ public class StageManager : MonoBehaviour
         SEManager.I.PlaySE(successSEVol, successSE);
 
         //カメラを変更する
-        canvas.worldCamera = finishCam;
+        canvas.worldCamera = finishCamera;
 
         var noDamageAddPoint = 0;
         var maxHPAddPoint = 0;

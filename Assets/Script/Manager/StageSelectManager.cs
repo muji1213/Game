@@ -54,7 +54,7 @@ public class StageSelectManager : SingleTon<StageSelectManager>
         while (true)
         {
             //クリアしていなかったらループを抜ける
-            if (!isStageCleared(i))
+            if (!IsStageCleared(i))
             {
                 //クリアしていないステージがあるならfalse
                 break;
@@ -73,7 +73,7 @@ public class StageSelectManager : SingleTon<StageSelectManager>
     }
 
     //ステージに1回でも入場したか
-    public bool isStageEntered(int num)
+    public bool IsStageEntered(int num)
     {
         return GetStage(num).Entered;
     }
@@ -86,7 +86,7 @@ public class StageSelectManager : SingleTon<StageSelectManager>
 
     //ステージをクリアしているか
     //numは登録時のステージ番号に対応する
-    public bool isStageCleared(int num)
+    public bool IsStageCleared(int num)
     {
         return GetStage(num).Completed;
     }
@@ -98,9 +98,9 @@ public class StageSelectManager : SingleTon<StageSelectManager>
         GetStage(num).Completed = true;
     }
 
-    public bool isPreStageCleared(int num)
+    public bool IsPreStageCleared(int num)
     {
-        if (isStageCleared(num - 1))
+        if (IsStageCleared(num - 1))
         {
             return true;
         }

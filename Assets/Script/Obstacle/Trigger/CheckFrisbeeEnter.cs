@@ -4,10 +4,16 @@ using UnityEngine;
 
 public class CheckFrisbeeEnter : Trigger
 {
+    [Header("メインカメラ")] [SerializeField] Camera mainCamera;
+
+    //カメラフォロワー
+    private CameraFollower cameraFollower;
+
     private bool isOn = false;
 
     private void Start()
     {
+        cameraFollower = mainCamera.GetComponent<CameraFollower>();
         targetTag = "Frisbee";
     }
 
@@ -21,7 +27,7 @@ public class CheckFrisbeeEnter : Trigger
     protected override void ActiveEvent()
     {
         //振動させる
-        GameObject.Find("Main Camera").GetComponent<CameraFollower>().Shake(0.2f, 0.3f);
+        cameraFollower.Shake(0.2f, 0.3f);
         isOn = true;
     }
 }

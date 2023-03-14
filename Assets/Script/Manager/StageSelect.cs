@@ -49,20 +49,20 @@ public class StageSelect : MonoBehaviour
             //0番目は必ず生成する
             if (i == 0)
             {
-                CreateStageSelectButton(i, StageSelectManager.I.isStageCleared(0));
+                CreateStageSelectButton(i, StageSelectManager.I.IsStageCleared(0));
             }
             //1番目以降
             else if (i >= 1)
             {
                 //ひとつ前のステージをクリアしていないなら生成しない
-                if (!StageSelectManager.I.isPreStageCleared(i))
+                if (!StageSelectManager.I.IsPreStageCleared(i))
                 {
                     
                 }
                 //クリアしているなら生成する
                 else
                 {
-                    CreateStageSelectButton(i, StageSelectManager.I.isStageCleared(i));
+                    CreateStageSelectButton(i, StageSelectManager.I.IsStageCleared(i));
                 }
             }
         }

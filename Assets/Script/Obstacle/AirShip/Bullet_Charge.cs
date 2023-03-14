@@ -9,16 +9,11 @@ public class Bullet_Charge : Bullet
 
     private float timer = 0.0f;
 
-    new void Start()
-    {
-        base.Start();
-    }
-
     private new void FixedUpdate()
     {
         base.FixedUpdate();
         //タイマーが消滅時間を超えたら消す
-        if (timer >= destroyTime)
+        if (timer >= DestroyTime)
         {
             timer = 0.0f;
 
@@ -32,7 +27,7 @@ public class Bullet_Charge : Bullet
         }
 
         //タイマーが攻撃判定が出るまでの時間を超えた場合
-        if (timer >= attackDelay)
+        if (timer >= AttackDelay)
         {
             //当たり判定を出現させる
             hitBox.enabled = true;
@@ -56,6 +51,10 @@ public class Bullet_Charge : Bullet
         set
         {
             attackDelay = value;
+        }
+        private get
+        {
+            return attackDelay;
         }
     }
 }

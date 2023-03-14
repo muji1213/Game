@@ -73,7 +73,7 @@ public class Player_Controller : MonoBehaviour, IMovable, IDienable<Player_HurtB
     {
         //コンポーネント取得
         //カメラ追従用のスクリプト
-        cameraFollower = GameObject.Find("Main Camera").GetComponent<CameraFollower>();
+        cameraFollower = GameObject.Find("Main Camera OnStage").GetComponent<CameraFollower>();
 
         //ステージマネージャー
         stageManager = GameObject.Find("StageManager").GetComponent<StageManager>();
@@ -257,8 +257,15 @@ public class Player_Controller : MonoBehaviour, IMovable, IDienable<Player_HurtB
 
         //フリスビーを生成
         GameObject threwfrisbee = Instantiate(GameManager.I.SelectedFrisbeeInfo.SelectedFrisbee, new Vector3(transform.position.x, this.transform.position.y, this.transform.position.z + 2), Quaternion.Euler(new Vector3(90, 90, 0)));
-        threwfrisbee.GetComponent<Frisbee>().SetHP(frisbeeHP);
 
+        //投げたフリスビーのスクリプト
+        var f = threwfrisbee.GetComponent<Frisbee>();
+        
+        //初期化
+        f.SetHP(frisbeeHP);
+        f.StageManager = this.stageManager;
+        f.CameraFollower = this.cameraFollower;
+           
         //投げた時点でプレイヤーを停止させる
         rb.velocity = Vector3.zero;
 
